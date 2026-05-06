@@ -1021,6 +1021,15 @@ section { padding: 80px 0; }
   margin-bottom: 8px;
   font-weight: 600;
 }
+.footer-brand .footer-logo {
+  height: 110px;
+  width: auto;
+  margin: -20px 0 6px -16px;
+  display: block;
+  /* Logo PNG ships with a solid black background — `screen` blends the black
+     into the ink-coloured footer so only the white mark remains visible. */
+  mix-blend-mode: screen;
+}
 .footer-brand p { color: rgba(255,255,255,.74); max-width: 360px; }
 .footer-col h3 {
   font-size: 12px;

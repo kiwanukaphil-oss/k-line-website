@@ -217,7 +217,7 @@
       +   '<div class="container">'
       +     '<div class="footer-grid">'
       +       '<div class="footer-brand">'
-      +         '<strong>K-LINE MEN</strong>'
+      +         '<img src="Logo.png" alt="K-LINE MEN" class="footer-logo">'
       +         '<p>Real Men Real Style. Modern menswear for work, weekends, and special occasions — based in Kampala, delivered across Uganda.</p>'
       +       '</div>'
       +       '<div class="footer-col"><h3>Shop</h3>' + cats + '<a href="shop.html">All products</a></div>'
