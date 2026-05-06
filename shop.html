@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — K-LINE MEN</title>
+  <meta name="description" content="Browse the full K-LINE MEN collection: shirts, polos, trousers, chinos, jeans, knitwear, blazers, suits, coats, jackets, shoes, watches, and accessories.">
+  <link rel="icon" type="image/png" href="assets/images/accessories/accessories-002.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <div class="eyebrow">Shop</div>
+        <h1 id="shop-title">All products</h1>
+        <p id="shop-sub">Every piece in the K-LINE MEN store. Filter, search, or sort to find exactly what you need.</p>
+      </div>
+    </section>
+
+    <section style="padding-top:40px;">
+      <div class="container">
+        <div class="shop-toolbar">
+          <label class="search-box">
+            <span aria-hidden="true" id="search-icon"></span>
+            <input id="search-input" type="search" placeholder="Search shirts, chinos, shoes, blazers…" aria-label="Search products">
+          </label>
+          <select class="sort-select" id="sort-select" aria-label="Sort products">
+            <option value="featured">Sort: Featured</option>
+            <option value="newest">Newest first</option>
+            <option value="price-asc">Price: Low to high</option>
+            <option value="price-desc">Price: High to low</option>
+            <option value="name-asc">Name: A → Z</option>
+          </select>
+        </div>
+
+        <div class="filter-pills" id="cat-pills"></div>
+
+        <div class="shop-layout">
+          <aside class="filter-panel" aria-label="Filters">
+            <div class="filter-group">
+              <strong>Occasion</strong>
+              <div id="occasion-filters"></div>
+            </div>
+            <div class="filter-group">
+              <strong>Price (UGX)</strong>
+              <label class="check"><input type="checkbox" data-price="0-100000"><span class="box"></span> Under 100,000</label>
+              <label class="check"><input type="checkbox" data-price="100000-200000"><span class="box"></span> 100,000 – 200,000</label>
+              <label class="check"><input type="checkbox" data-price="200000-400000"><span class="box"></span> 200,000 – 400,000</label>
+              <label class="check"><input type="checkbox" data-price="400000-9999999"><span class="box"></span> Above 400,000</label>
+            </div>
+            <div class="filter-group">
+              <strong>Tags</strong>
+              <label class="check"><input type="checkbox" data-badge="new"><span class="box"></span> New arrivals</label>
+              <label class="check"><input type="checkbox" data-badge="bestseller"><span class="box"></span> Best sellers</label>
+              <label class="check"><input type="checkbox" data-badge="signature"><span class="box"></span> K-LINE Signature</label>
+            </div>
+            <button class="btn btn-secondary btn-block" id="clear-filters" style="margin-top:18px;">Clear filters</button>
+          </aside>
+
+          <div>
+            <div class="results-meta">
+              <span id="results-count"></span>
+              <span id="active-summary"></span>
+            </div>
+            <div class="product-grid" id="results-grid"></div>
+            <div class="no-results" id="no-results" style="display:none;">
+              <h3 style="font-family:var(--display); font-size:28px; margin-bottom:8px;">No matches</h3>
+              <p>Try clearing a filter or searching for something different.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+    SITE.mount('shop');
+    document.getElementById('search-icon').innerHTML = SITE.icons.search;
+
+    /* ───── Read URL params ───── */
+    const params = new URLSearchParams(location.search);
+    const initialCat      = params.get('cat')      || 'all';
+    const initialBadge    = params.get('badge')    || '';
+    const initialOccasion = params.get('occasion') || '';
+    const initialQuery    = params.get('q')        || '';
+
+    /* ───── State ───── */
+    const state = {
+      category: initialCat,
+      query: initialQuery,
+      sort: 'featured',
+      occasions: new Set(initialOccasion ? [initialOccasion] : []),
+      prices: new Set(),
+      badges: new Set(initialBadge ? [initialBadge] : [])
+    };
+
+    /* ───── Build category pills ───── */
+    const pillsEl = document.getElementById('cat-pills');
+    const catList = [{ slug: 'all', label: 'All' }, ...KLINE_CATEGORIES];
+    function renderPills() {
+      pillsEl.innerHTML = catList.map(c =>
+        '<button class="pill' + (state.category === c.slug ? ' active' : '') + '" data-cat="' + c.slug + '">' + c.label + '</button>'
+      ).join('');
+    }
+    renderPills();
+    pillsEl.addEventListener('click', e => {
+      const btn = e.target.closest('.pill');
+      if (!btn) return;
+      state.category = btn.getAttribute('data-cat');
+      renderPills();
+      apply();
+    });
+
+    /* ───── Occasion filters (built from data) ───── */
+    const allOccasions = Array.from(new Set(KLINE_PRODUCTS.flatMap(p => p.occasion || []))).sort();
+    const occasionLabels = {
+      'work': 'Work',
+      'formal': 'Formal',
+      'event': 'Event',
+      'smart-casual': 'Smart casual',
+      'weekend': 'Weekend',
+      'casual': 'Casual',
+      'sport': 'Sport',
+      'everyday': 'Everyday'
+    };
+    document.getElementById('occasion-filters').innerHTML = allOccasions.map(o => ''
+      + '<label class="check">'
+      +   '<input type="checkbox" data-occasion="' + o + '"' + (state.occasions.has(o) ? ' checked' : '') + '>'
+      +   '<span class="box"></span> ' + (occasionLabels[o] || o)
+      + '</label>'
+    ).join('');
+
+    /* ───── Filter wiring ───── */
+    document.querySelectorAll('input[data-occasion]').forEach(el => {
+      el.addEventListener('change', () => {
+        const v = el.getAttribute('data-occasion');
+        if (el.checked) state.occasions.add(v); else state.occasions.delete(v);
+        apply();
+      });
+    });
+    document.querySelectorAll('input[data-price]').forEach(el => {
+      el.addEventListener('change', () => {
+        const v = el.getAttribute('data-price');
+        if (el.checked) state.prices.add(v); else state.prices.delete(v);
+        apply();
+      });
+    });
+    document.querySelectorAll('input[data-badge]').forEach(el => {
+      const v = el.getAttribute('data-badge');
+      if (state.badges.has(v)) el.checked = true;
+      el.addEventListener('change', () => {
+        if (el.checked) state.badges.add(v); else state.badges.delete(v);
+        apply();
+      });
+    });
+    document.getElementById('search-input').value = state.query;
+    document.getElementById('search-input').addEventListener('input', e => {
+      state.query = e.target.value.trim().toLowerCase();
+      apply();
+    });
+    document.getElementById('sort-select').addEventListener('change', e => {
+      state.sort = e.target.value;
+      apply();
+    });
+    document.getElementById('clear-filters').addEventListener('click', () => {
+      state.category = 'all';
+      state.query = '';
+      state.occasions.clear();
+      state.prices.clear();
+      state.badges.clear();
+      document.querySelectorAll('input[data-occasion], input[data-price], input[data-badge]').forEach(i => i.checked = false);
+      document.getElementById('search-input').value = '';
+      renderPills();
+      apply();
+    });
+
+    /* ───── Filter + sort logic ───── */
+    function priceMatches(price) {
+      if (state.prices.size === 0) return true;
+      for (const range of state.prices) {
+        const [lo, hi] = range.split('-').map(Number);
+        if (price >= lo && price <= hi) return true;
+      }
+      return false;
+    }
+    function apply() {
+      let list = KLINE.all().slice();
+
+      if (state.category !== 'all')   list = list.filter(p => p.category === state.category);
+      if (state.query)                list = list.filter(p =>
+        (p.name + ' ' + (p.color ? p.color.name : '') + ' ' + (p.description || '')).toLowerCase().includes(state.query)
+      );
+      if (state.occasions.size)       list = list.filter(p => (p.occasion || []).some(o => state.occasions.has(o)));
+      if (state.badges.size)          list = list.filter(p => (p.badges || []).some(b => state.badges.has(b)));
+      list = list.filter(p => priceMatches(p.price));
+
+      // Sort. Stable enough for our purposes.
+      switch (state.sort) {
+        case 'newest':     list.sort((a, b) => (b.badges || []).includes('new') - (a.badges || []).includes('new')); break;
+        case 'price-asc':  list.sort((a, b) => a.price - b.price); break;
+        case 'price-desc': list.sort((a, b) => b.price - a.price); break;
+        case 'name-asc':   list.sort((a, b) => a.name.localeCompare(b.name)); break;
+        // 'featured' = catalog order
+      }
+
+      // Render
+      const grid = document.getElementById('results-grid');
+      const empty = document.getElementById('no-results');
+      grid.innerHTML = list.map(p => SITE.productCardHTML(p)).join('');
+      empty.style.display = list.length ? 'none' : 'block';
+
+      document.getElementById('results-count').textContent = list.length + ' ' + (list.length === 1 ? 'product' : 'products');
+      const titleParts = [];
+      if (state.category !== 'all') titleParts.push(KLINE_CATEGORIES.find(c => c.slug === state.category).label);
+      if (state.badges.size) titleParts.push(Array.from(state.badges).join(', '));
+      document.getElementById('shop-title').textContent = titleParts.length ? titleParts.join(' · ') : 'All products';
+
+      // Reflect in URL so filters survive sharing/refresh
+      const search = new URLSearchParams();
+      if (state.category !== 'all') search.set('cat', state.category);
+      if (state.query)              search.set('q', state.query);
+      if (state.badges.size === 1)  search.set('badge', Array.from(state.badges)[0]);
+      if (state.occasions.size === 1) search.set('occasion', Array.from(state.occasions)[0]);
+      const qs = search.toString();
+      history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+    }
+
+    apply();
+  </script>
+</body>
+</html>

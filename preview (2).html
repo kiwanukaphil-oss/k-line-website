@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KLINE-MEN | Real Men Real Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111827;
+      --ink-2: #1f2933;
+      --muted: #667085;
+      --page: #ffffff;
+      --warm: #f7f5f0;
+      --stone: #ebe4da;
+      --mist: #f3f4f6;
+      --line: #e3e0da;
+      --bronze: #a67845;
+      --bronze-dark: #7f5730;
+      --burgundy: #7a1f2b;
+      --success: #1f8f5f;
+      --shadow: 0 24px 70px rgba(17, 24, 39, 0.12);
+      --soft-shadow: 0 14px 40px rgba(17, 24, 39, 0.08);
+      --display: 'Cormorant Garamond', serif;
+      --body: 'Manrope', sans-serif;
+      --radius: 22px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      color: var(--ink);
+      background: var(--page);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .announcement {
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 10px 16px;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      min-width: 155px;
+    }
+    .brand strong {
+      font-family: var(--display);
+      font-size: 28px;
+      letter-spacing: .06em;
+      font-weight: 700;
+    }
+    .brand span {
+      margin-top: 5px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      color: var(--bronze-dark);
+      font-weight: 800;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--ink-2);
+    }
+    .nav-links a:hover { color: var(--bronze-dark); }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .icon-btn, .menu-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .menu-btn { display: none; }
+    .whatsapp-small {
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .whatsapp-dot {
+      width: 9px;
+      height: 9px;
+      background: #25d366;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at 88% 12%, rgba(166, 120, 69, .16), transparent 32%),
+        linear-gradient(135deg, #fff 0%, var(--warm) 60%, #eee6da 100%);
+      padding: 74px 0 72px;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: center;
+      gap: 56px;
+    }
+    .eyebrow {
+      color: var(--bronze-dark);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      margin-bottom: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 34px;
+      height: 1px;
+      background: var(--bronze);
+    }
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(58px, 8vw, 104px);
+      line-height: .9;
+      font-weight: 700;
+      letter-spacing: -.035em;
+      max-width: 740px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--bronze-dark);
+      font-weight: 500;
+    }
+    .hero-copy {
+      font-size: 18px;
+      color: var(--ink-2);
+      margin: 26px 0 34px;
+      max-width: 610px;
+    }
+    .hero-actions, .section-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 15px 22px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform .2s ease, background .2s ease, color .2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-secondary { background: #fff; color: var(--ink); border-color: var(--line); }
+    .btn-bronze { background: var(--bronze); color: #fff; }
+    .btn-outline { background: transparent; border-color: rgba(255,255,255,.36); color: #fff; }
+    .hero-note {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .hero-note span { display: inline-flex; align-items: center; gap: 8px; }
+    .tick {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(166,120,69,.16);
+      color: var(--bronze-dark);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .hero-showcase {
+      position: relative;
+      min-height: 620px;
+    }
+    .model-card {
+      position: absolute;
+      inset: 0 70px 0 0;
+      border-radius: 38px;
+      background:
+        linear-gradient(to top, rgba(17,24,39,.72), transparent 52%),
+        linear-gradient(145deg, #d9d2c6 0%, #f5f1ea 42%, #c9b79e 100%);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .model-card::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 52px;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 480px;
+      border-radius: 130px 130px 28px 28px;
+      background:
+        linear-gradient(90deg, transparent 0 24%, rgba(255,255,255,.22) 24% 26%, transparent 26% 74%, rgba(255,255,255,.18) 74% 76%, transparent 76%),
+        linear-gradient(180deg, #1f2933 0 37%, #263241 37% 72%, #1a202b 72% 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), 0 20px 50px rgba(17,24,39,.18);
+    }
+    .model-card::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 80px;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5f4634, #2e221b);
+      box-shadow: 0 115px 0 25px #f3eee6;
+    }
+    .hero-badge {
+      position: absolute;
+      left: -12px;
+      bottom: 82px;
+      width: 210px;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: var(--soft-shadow);
+      padding: 18px;
+      z-index: 2;
+    }
+    .hero-badge strong {
+      display: block;
+      font-family: var(--display);
+      font-size: 25px;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .hero-badge span { color: var(--muted); font-size: 13px; }
+    .hero-outfit {
+      position: absolute;
+      right: 0;
+      top: 64px;
+      width: 235px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 26px;
+      padding: 18px;
+      z-index: 2;
+      box-shadow: var(--shadow);
+    }
+    .hero-outfit h3 {
+      font-family: var(--display);
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .outfit-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.8);
+      font-size: 12px;
+    }
+    .outfit-line b { color: #fff; }
+
+    section { padding: 76px 0; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .section-title {
+      max-width: 740px;
+    }
+    .section-title h2 {
+      font-family: var(--display);
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: .98;
+      letter-spacing: -.025em;
+      font-weight: 700;
+      margin-bottom: 13px;
+    }
+    .section-title p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 650px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .category-card {
+      min-height: 310px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      background: var(--ink);
+      position: relative;
+      box-shadow: var(--soft-shadow);
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(17,24,39,.88), rgba(17,24,39,.18));
+      z-index: 1;
+    }
+    .category-card::after {
+      content: '';
+      position: absolute;
+      right: -26px;
+      bottom: -34px;
+      width: 190px;
+      height: 220px;
+      border-radius: 80px 80px 18px 18px;
+      background: rgba(255,255,255,.24);
+      transform: rotate(-8deg);
+    }
+    .category-card:nth-child(1) { background: linear-gradient(135deg, #3a4654, #111827); }
+    .category-card:nth-child(2) { background: linear-gradient(135deg, #766553, #1f2933); }
+    .category-card:nth-child(3) { background: linear-gradient(135deg, #3a2b22, #111827); }
+    .category-card:nth-child(4) { background: linear-gradient(135deg, #7a1f2b, #1f2933); }
+    .category-card > * { position: relative; z-index: 2; }
+    .category-card .count {
+      align-self: flex-start;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .category-card h3 {
+      font-family: var(--display);
+      font-size: 35px;
+      line-height: .96;
+      margin-bottom: 12px;
+    }
+    .category-card p { color: rgba(255,255,255,.78); font-size: 14px; }
+
+    .warm-section { background: var(--warm); }
+    .edits-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 18px;
+    }
+    .edit-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(17,24,39,.04);
+    }
+    .edit-card.featured {
+      background: var(--ink);
+      color: #fff;
+      min-height: 380px;
+      background-image: radial-gradient(circle at 82% 20%, rgba(166,120,69,.36), transparent 35%);
+    }
+    .edit-card h3 {
+      font-family: var(--display);
+      font-size: 38px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .edit-card p { color: var(--muted); }
+    .edit-card.featured p { color: rgba(255,255,255,.76); }
+    .mini-products {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .mini-products span {
+      background: var(--mist);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .featured .mini-products span { background: rgba(255,255,255,.14); color: #fff; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .product-card {
+      position: relative;
+    }
+    .product-media {
+      aspect-ratio: 3/4;
+      border-radius: 20px;
+      background: var(--mist);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+    }
+    .product-media::before {
+      content: '';
+      position: absolute;
+      inset: 16% 26%;
+      border-radius: 30px 30px 10px 10px;
+      background: linear-gradient(135deg, #1f2933, #4b5563);
+      box-shadow: 0 26px 50px rgba(17,24,39,.14);
+    }
+    .product-media.shirt::before { background: linear-gradient(135deg, #f8f8f8, #cbd5e1); border: 1px solid #d7dce3; }
+    .product-media.polo::before { background: linear-gradient(135deg, #233142, #111827); }
+    .product-media.chino::before { inset: 12% 32%; background: linear-gradient(135deg, #c6a882, #5f4b38); border-radius: 18px 18px 14px 14px; }
+    .product-media.shoe::before { inset: 42% 13% 32%; border-radius: 999px 32px 32px 999px; background: linear-gradient(90deg, #2f241c, #111827); }
+    .product-media.blazer::before { background: linear-gradient(135deg, #7a1f2b, #111827); }
+    .product-media.watch::before { inset: 30%; border-radius: 50%; background: radial-gradient(circle, #f4efe7 0 35%, #a67845 36% 45%, #111827 46% 100%); }
+    .product-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      z-index: 2;
+    }
+    .product-actions {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      display: flex;
+      gap: 8px;
+      z-index: 2;
+    }
+    .product-actions span {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .product-card h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .product-meta {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .price { font-weight: 900; }
+    .sizes { color: var(--muted); font-size: 12px; font-weight: 800; }
+
+    .shop-preview {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 24px;
+      box-shadow: var(--soft-shadow);
+    }
+    .shop-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .search-box {
+      flex: 1;
+      background: var(--mist);
+      border-radius: 999px;
+      padding: 14px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .shop-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+    }
+    .filter-panel {
+      background: var(--warm);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      align-self: start;
+    }
+    .filter-group { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .filter-group:last-child { border-bottom: 0; }
+    .filter-group strong {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      margin: 8px 0;
+      font-weight: 700;
+    }
+    .box {
+      width: 15px;
+      height: 15px;
+      border: 1px solid #b8b5ad;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .box.checked { background: var(--ink); border-color: var(--ink); box-shadow: inset 0 0 0 3px #fff; }
+    .compact-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+    .pdp {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 34px;
+      align-items: start;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 26px;
+      box-shadow: var(--soft-shadow);
+    }
+    .pdp-gallery {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 16px;
+    }
+    .thumbs { display: flex; flex-direction: column; gap: 12px; }
+    .thumb {
+      aspect-ratio: 1;
+      border-radius: 14px;
+      background: var(--mist);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+    .thumb.active { border: 2px solid var(--ink); }
+    .pdp-main {
+      aspect-ratio: 4/5;
+      border-radius: 24px;
+      background: linear-gradient(150deg, #f8f6f1, #d7cec0);
+      position: relative;
+      overflow: hidden;
+    }
+    .pdp-main::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 14%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 470px;
+      border-radius: 110px 110px 20px 20px;
+      background: linear-gradient(135deg, #1f2933, #111827 60%, #7a1f2b);
+      box-shadow: 0 30px 70px rgba(17,24,39,.16);
+    }
+    .pdp-info .category {
+      color: var(--bronze-dark);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .pdp-info h2 {
+      font-family: var(--display);
+      font-size: 48px;
+      line-height: .98;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+    .pdp-price {
+      font-size: 24px;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+    .option-row { margin: 22px 0; }
+    .option-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .size-link { color: var(--bronze-dark); border-bottom: 1px solid currentColor; }
+    .size-options, .color-options { display: flex; gap: 9px; flex-wrap: wrap; }
+    .size-option {
+      min-width: 48px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .size-option.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .color-option {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 0 4px #fff;
+    }
+    .color-option.active { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .pdp-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 24px 0;
+    }
+    .accordion {
+      border-top: 1px solid var(--line);
+    }
+    .accordion-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .accordion-item strong {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    .accordion-item p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .trust-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .trust-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .trust-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      font-size: 20px;
+    }
+    .trust-card h3 { font-size: 17px; margin-bottom: 6px; }
+    .trust-card p { color: var(--muted); font-size: 14px; }
+
+    .story {
+      background: var(--ink);
+      color: #fff;
+      border-radius: 38px;
+      padding: 58px;
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 40px;
+      align-items: center;
+      background-image: radial-gradient(circle at 16% 20%, rgba(166,120,69,.32), transparent 30%);
+    }
+    .story h2 {
+      font-family: var(--display);
+      font-size: clamp(42px, 5vw, 68px);
+      line-height: .95;
+      letter-spacing: -.025em;
+    }
+    .story p { color: rgba(255,255,255,.78); font-size: 17px; margin-bottom: 20px; }
+    .story-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .story-list span {
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .faq-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      background: #fff;
+    }
+    .faq-card h3 { font-size: 17px; margin-bottom: 8px; }
+    .faq-card p { color: var(--muted); font-size: 14px; }
+
+    .site-footer {
+      background: var(--ink);
+      color: #fff;
+      padding: 58px 0 28px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .7fr .7fr .9fr;
+      gap: 32px;
+      padding-bottom: 38px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+    }
+    .footer-brand strong {
+      display: block;
+      font-family: var(--display);
+      font-size: 34px;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+    .footer-brand p { color: rgba(255,255,255,.74); max-width: 360px; }
+    .footer-col h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+    .footer-col a, .footer-col p {
+      display: block;
+      color: rgba(255,255,255,.7);
+      margin: 9px 0;
+      font-size: 14px;
+    }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 24px;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .floating-whatsapp {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      background: #25d366;
+      color: #fff;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 16px 38px rgba(37,211,102,.28);
+      border: 4px solid #fff;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links, .whatsapp-small { display: none; }
+      .menu-btn { display: inline-flex; }
+      .hero-grid, .pdp, .story { grid-template-columns: 1fr; }
+      .hero-showcase { min-height: 520px; }
+      .model-card { right: 0; }
+      .category-grid, .product-grid, .trust-strip { grid-template-columns: repeat(2, 1fr); }
+      .edits-grid { grid-template-columns: 1fr; }
+      .shop-layout { grid-template-columns: 1fr; }
+      .filter-panel { display: none; }
+      .compact-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px, 1180px); }
+      .announcement { font-size: 10px; line-height: 1.5; }
+      .nav { height: 68px; }
+      .brand strong { font-size: 24px; }
+      .hero { padding: 48px 0; }
+      .hero h1 { font-size: 58px; }
+      .hero-copy { font-size: 16px; }
+      .hero-showcase { min-height: 440px; }
+      .hero-outfit { display: none; }
+      .hero-badge { left: 14px; bottom: 28px; }
+      .model-card::before { width: 220px; height: 390px; }
+      section { padding: 56px 0; }
+      .section-head { align-items: start; flex-direction: column; }
+      .category-grid, .product-grid, .compact-grid, .trust-strip, .faq-grid, .footer-grid, .story-list { grid-template-columns: 1fr; }
+      .category-card { min-height: 230px; }
+      .shop-top { flex-direction: column; align-items: stretch; }
+      .pdp-gallery { grid-template-columns: 1fr; }
+      .thumbs { flex-direction: row; }
+      .thumb { width: 66px; flex: 0 0 66px; }
+      .pdp-actions { grid-template-columns: 1fr; }
+      .story { padding: 34px 24px; border-radius: 28px; }
+      .footer-bottom { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="announcement">New styles weekly · Delivery available · Order easily on WhatsApp</div>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#">
+        <strong>KLINE-MEN</strong>
+        <span>Real Men Real Style</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#shop">Shop</a>
+        <a href="#categories">Categories</a>
+        <a href="#new">New Arrivals</a>
+        <a href="#looks">Style Ideas</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn" aria-label="Search">⌕</button>
+        <button class="icon-btn" aria-label="Wishlist">♡</button>
+        <button class="icon-btn" aria-label="Cart">Bag</button>
+        <a href="#contact" class="whatsapp-small"><span class="whatsapp-dot"></span> WhatsApp</a>
+        <button class="menu-btn" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Modern menswear store</div>
+          <h1>Real Men.<br><em>Real Style.</em></h1>
+          <p class="hero-copy">Smart, stylish menswear for work, weekends, and special occasions. Quality pieces that look premium, feel practical, and are easy to shop.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#new">Shop New Arrivals</a>
+            <a class="btn btn-secondary" href="#looks">Get Outfit Ideas</a>
+          </div>
+          <div class="hero-note">
+            <span><i class="tick">✓</i> Clear prices</span>
+            <span><i class="tick">✓</i> Size support</span>
+            <span><i class="tick">✓</i> WhatsApp ordering</span>
+          </div>
+        </div>
+
+        <div class="hero-showcase" aria-label="KLINE-MEN outfit showcase">
+          <div class="model-card"></div>
+          <div class="hero-outfit">
+            <h3>Office Ready</h3>
+            <div class="outfit-line"><span>Oxford Shirt</span><b>UGX 145k</b></div>
+            <div class="outfit-line"><span>Tapered Chino</span><b>UGX 180k</b></div>
+            <div class="outfit-line"><span>Leather Belt</span><b>UGX 95k</b></div>
+            <div class="outfit-line"><span>Derby Shoe</span><b>UGX 295k</b></div>
+          </div>
+          <div class="hero-badge">
+            <strong>Premium, but approachable.</strong>
+            <span>A polished menswear experience for real everyday customers.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="categories">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Shop by category</div>
+            <h2>Find what you need quickly.</h2>
+            <p>Simple shopping paths for the most common men’s wardrobe needs — from work shirts to shoes and accessories.</p>
+          </div>
+          <a class="btn btn-secondary" href="#shop">View All Products</a>
+        </div>
+
+        <div class="category-grid">
+          <a class="category-card" href="#shop">
+            <span class="count">42 items</span>
+            <div><h3>Shirts<br>& Polos</h3><p>Clean everyday pieces for office and smart casual dressing.</p></div>
+          </a>
+          <a class="category-card" href="#shop">
+            <span class="count">28 items</span>
+            <div><h3>Trousers<br>& Chinos</h3><p>Easy-fit options for work, weekends, and dressier looks.</p></div>
+          </a>
+          <a class="category-card" href="#shop">
+            <span class="count">37 items</span>
+            <div><h3>Shoes<br>& Accessories</h3><p>The finishing touches: shoes, belts, watches, and more.</p></div>
+          </a>
+          <a class="category-card" href="#shop">
+            <span class="count">19 items</span>
+            <div><h3>Suits<br>& Blazers</h3><p>Sharp pieces for events, meetings, and confident occasions.</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="looks" class="warm-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Style made simple</div>
+            <h2>Shop by how men actually dress.</h2>
+            <p>Instead of only browsing by product, customers can shop complete outfit ideas that fit real life.</p>
+          </div>
+        </div>
+
+        <div class="edits-grid">
+          <article class="edit-card featured">
+            <div>
+              <div class="eyebrow" style="color:#d9c0a2">Featured look</div>
+              <h3>Work Ready</h3>
+              <p>Smart shirts, chinos, belts, and shoes for men who want to look polished at work without overthinking it.</p>
+            </div>
+            <div class="mini-products">
+              <span>Shirts</span><span>Chinos</span><span>Belts</span><span>Formal shoes</span>
+            </div>
+          </article>
+          <article class="edit-card">
+            <div>
+              <h3>Weekend Smart</h3>
+              <p>Polos, jeans, sneakers, and watches for relaxed confidence.</p>
+            </div>
+            <div class="mini-products"><span>Polos</span><span>Jeans</span><span>Sneakers</span></div>
+          </article>
+          <article class="edit-card">
+            <div>
+              <h3>Event Ready</h3>
+              <p>Blazers, suits, dress shoes, and accessories for occasions that matter.</p>
+            </div>
+            <div class="mini-products"><span>Blazers</span><span>Suits</span><span>Dress shoes</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="new">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Fresh in store</div>
+            <h2>New arrivals.</h2>
+            <p>Keep this section fresh so returning customers always have a reason to check what has just landed.</p>
+          </div>
+          <a class="btn btn-secondary" href="#shop">Shop New</a>
+        </div>
+
+        <div class="product-grid">
+          <article class="product-card">
+            <div class="product-media shirt"><span class="product-badge">New</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>White Oxford Slim Shirt</h3>
+            <div class="product-meta">3 colours · Work / Smart casual</div>
+            <div class="product-bottom"><span class="price">UGX 145,000</span><span class="sizes">M–XXL</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media chino"><span class="product-badge">New</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Stone Tapered Chino</h3>
+            <div class="product-meta">5 colours · Everyday fit</div>
+            <div class="product-bottom"><span class="price">UGX 180,000</span><span class="sizes">30–38</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media blazer"><span class="product-badge">New</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Charcoal Smart Blazer</h3>
+            <div class="product-meta">2 colours · Event ready</div>
+            <div class="product-bottom"><span class="price">UGX 420,000</span><span class="sizes">M–XXL</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media shoe"><span class="product-badge">New</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Brown Leather Derby Shoe</h3>
+            <div class="product-meta">2 colours · Formal / Smart</div>
+            <div class="product-bottom"><span class="price">UGX 295,000</span><span class="sizes">40–45</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="warm-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Customer favourites</div>
+            <h2>Best sellers.</h2>
+            <p>Best sellers reduce hesitation because new customers can quickly see what other men are already buying.</p>
+          </div>
+        </div>
+        <div class="product-grid">
+          <article class="product-card">
+            <div class="product-media polo"><span class="product-badge">Popular</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Navy Classic Polo</h3>
+            <div class="product-meta">4 colours · Weekend smart</div>
+            <div class="product-bottom"><span class="price">UGX 95,000</span><span class="sizes">S–XXL</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media chino"><span class="product-badge">Popular</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Dark Slim Jean</h3>
+            <div class="product-meta">3 washes · Casual</div>
+            <div class="product-bottom"><span class="price">UGX 165,000</span><span class="sizes">30–40</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media watch"><span class="product-badge">Popular</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Minimal Wristwatch</h3>
+            <div class="product-meta">2 colours · Accessory</div>
+            <div class="product-bottom"><span class="price">UGX 120,000</span><span class="sizes">One size</span></div>
+          </article>
+          <article class="product-card">
+            <div class="product-media shoe"><span class="product-badge">Popular</span><div class="product-actions"><span>♡</span><span>☏</span></div></div>
+            <h3>Black Dress Shoe</h3>
+            <div class="product-meta">Formal · Office</div>
+            <div class="product-bottom"><span class="price">UGX 275,000</span><span class="sizes">40–45</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="shop">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Product listing page concept</div>
+            <h2>Simple browsing, premium presentation.</h2>
+            <p>The shop page should help men narrow choices quickly without making the site feel crowded.</p>
+          </div>
+        </div>
+
+        <div class="shop-preview">
+          <div class="shop-top">
+            <div class="search-box">Search for shirts, chinos, shoes, belts...</div>
+            <button class="btn btn-primary">Sort: Newest</button>
+          </div>
+          <div class="filter-pills">
+            <span class="pill active">All</span><span class="pill">Shirts</span><span class="pill">Trousers</span><span class="pill">Shoes</span><span class="pill">Accessories</span><span class="pill">Office wear</span><span class="pill">Weekend smart</span>
+          </div>
+          <div class="shop-layout">
+            <aside class="filter-panel">
+              <div class="filter-group"><strong>Size</strong><div class="check"><span class="box checked"></span> Medium</div><div class="check"><span class="box"></span> Large</div><div class="check"><span class="box"></span> XL</div></div>
+              <div class="filter-group"><strong>Price</strong><div class="check"><span class="box"></span> Under UGX 100k</div><div class="check"><span class="box checked"></span> UGX 100k–250k</div><div class="check"><span class="box"></span> Above UGX 250k</div></div>
+              <div class="filter-group"><strong>Occasion</strong><div class="check"><span class="box checked"></span> Work</div><div class="check"><span class="box"></span> Weekend</div><div class="check"><span class="box"></span> Events</div></div>
+            </aside>
+            <div class="product-grid compact-grid">
+              <article class="product-card"><div class="product-media shirt"><span class="product-badge">New</span></div><h3>Blue Office Shirt</h3><div class="product-meta">Slim fit</div><div class="product-bottom"><span class="price">UGX 135,000</span><span class="sizes">M–XXL</span></div></article>
+              <article class="product-card"><div class="product-media chino"><span class="product-badge">In stock</span></div><h3>Khaki Chino Trouser</h3><div class="product-meta">Regular fit</div><div class="product-bottom"><span class="price">UGX 175,000</span><span class="sizes">30–38</span></div></article>
+              <article class="product-card"><div class="product-media shoe"><span class="product-badge">Popular</span></div><h3>Tan Loafer</h3><div class="product-meta">Smart casual</div><div class="product-bottom"><span class="price">UGX 255,000</span><span class="sizes">40–45</span></div></article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="warm-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Product detail page concept</div>
+            <h2>Clear, confident, and ready to buy.</h2>
+            <p>The product page should answer fit, price, availability, styling, delivery, and ordering questions without making the customer work hard.</p>
+          </div>
+        </div>
+
+        <div class="pdp">
+          <div class="pdp-gallery">
+            <div class="thumbs"><div class="thumb active"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+            <div class="pdp-main"></div>
+          </div>
+          <div class="pdp-info">
+            <div class="category">Suits & Blazers</div>
+            <h2>Charcoal Smart Blazer</h2>
+            <p style="color:var(--muted)">A sharp, easy-to-style blazer for office, dinners, events, and smart casual outfits.</p>
+            <div class="pdp-price">UGX 420,000</div>
+            <div class="option-row"><div class="option-label"><span>Colour: Charcoal</span></div><div class="color-options"><span class="color-option active" style="background:#1f2933"></span><span class="color-option" style="background:#334155"></span><span class="color-option" style="background:#7a1f2b"></span></div></div>
+            <div class="option-row"><div class="option-label"><span>Choose size</span><a class="size-link" href="#">Size guide</a></div><div class="size-options"><span class="size-option">S</span><span class="size-option">M</span><span class="size-option active">L</span><span class="size-option">XL</span><span class="size-option">XXL</span></div></div>
+            <div class="pdp-actions"><button class="btn btn-primary">Add to Cart</button><button class="btn btn-secondary"><span class="whatsapp-dot"></span> WhatsApp Order</button></div>
+            <div class="accordion"><div class="accordion-item"><strong>Style it with <span>+</span></strong><p>Pair with a white shirt, stone chino, brown belt, and leather shoes for a clean office or event look.</p></div><div class="accordion-item"><strong>Delivery & pickup <span>+</span></strong><p>Offer delivery where available, plus direct WhatsApp support for delivery confirmation.</p></div><div class="accordion-item"><strong>Returns & exchanges <span>+</span></strong><p>Keep the policy simple and visible so customers feel safe buying online.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Trust builders</div>
+            <h2>Make customers feel safe to buy.</h2>
+            <p>These details should appear on the homepage, product pages, checkout, and footer.</p>
+          </div>
+        </div>
+        <div class="trust-strip">
+          <div class="trust-card"><div class="trust-icon">🚚</div><h3>Delivery available</h3><p>Show delivery options clearly and confirm details through WhatsApp where needed.</p></div>
+          <div class="trust-card"><div class="trust-icon">↺</div><h3>Easy exchanges</h3><p>Explain exchange conditions in simple language so customers are not afraid to order.</p></div>
+          <div class="trust-card"><div class="trust-icon">☏</div><h3>WhatsApp support</h3><p>Let customers ask about size, fit, availability, and outfit matching before buying.</p></div>
+          <div class="trust-card"><div class="trust-icon">💳</div><h3>Flexible payment</h3><p>Display Mobile Money, cash, card, or bank options depending on what you support.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="story">
+        <div><div class="eyebrow" style="color:#d9c0a2">About KLINE-MEN</div><h2>Premium style for real life.</h2></div>
+        <div>
+          <p>KLINE-MEN is built for men who want to look sharp without making dressing complicated. The store brings together smart shirts, trousers, polos, jeans, blazers, suits, shoes, belts, watches, and accessories in a way that feels stylish, practical, and approachable.</p>
+          <p>The website should make every customer feel welcome — whether he is buying one shirt, upgrading his work wardrobe, or putting together a complete outfit for an occasion.</p>
+          <div class="story-list"><span>Clear prices</span><span>Helpful style ideas</span><span>Easy WhatsApp ordering</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="warm-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">Helpful questions</div>
+            <h2>FAQs customers will look for.</h2>
+          </div>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-card"><h3>How do I place an order?</h3><p>Add items to cart or tap the WhatsApp button on any product to ask about availability and delivery.</p></div>
+          <div class="faq-card"><h3>Can I get help choosing my size?</h3><p>Yes. Use the size guide or message KLINE-MEN on WhatsApp before ordering.</p></div>
+          <div class="faq-card"><h3>Do you offer delivery?</h3><p>Delivery information should be clearly shown, with WhatsApp support for confirming location and cost.</p></div>
+          <div class="faq-card"><h3>Can I exchange an item?</h3><p>State the exchange period, condition of items, and any exclusions in simple terms.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><strong>KLINE-MEN</strong><p>Real Men Real Style. Modern menswear for work, weekends, and special occasions.</p></div>
+        <div class="footer-col"><h3>Shop</h3><a href="#">Shirts</a><a href="#">Trousers</a><a href="#">Shoes</a><a href="#">Accessories</a></div>
+        <div class="footer-col"><h3>Help</h3><a href="#">Size guide</a><a href="#">Delivery</a><a href="#">Returns</a><a href="#">FAQs</a></div>
+        <div class="footer-col"><h3>Contact</h3><p>WhatsApp: +256 XXX XXX XXX</p><p>Kampala, Uganda</p><p>Instagram · TikTok · Facebook</p></div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 KLINE-MEN. All rights reserved.</span><span>Designed as an accessible premium menswear experience.</span></div>
+    </div>
+  </footer>
+
+  <a href="#contact" class="floating-whatsapp" aria-label="Chat on WhatsApp">☏</a>
+</body>
+</html>

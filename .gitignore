@@ -1,0 +1,25 @@
+# Original product image folder — duplicates of assets/images/ used by the site.
+# Kept locally in OneDrive as a backup; not needed in the deployed repo.
+Product images/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor noise
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs / dumps
+*.log
+npm-debug.log*
+
+# Optional: dependencies (none used today, but defensive)
+node_modules/
+
+# Local-only
+.env
+.env.local

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist — K-LINE MEN</title>
+  <meta name="description" content="Pieces you've saved at K-LINE MEN.">
+  <link rel="icon" type="image/png" href="assets/images/accessories/accessories-002.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <div class="eyebrow">Wishlist</div>
+        <h1>Saved for later.</h1>
+        <p>Pieces you've earmarked. Tap the heart on any product card to add or remove.</p>
+      </div>
+    </section>
+
+    <section style="padding-top:48px;">
+      <div class="container" id="wish-root"></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+    SITE.mount('wishlist');
+
+    function render() {
+      const ids = SITE.getWishlist();
+      const items = ids.map(id => KLINE.byId(id)).filter(Boolean);
+      const root = document.getElementById('wish-root');
+
+      if (!items.length) {
+        root.innerHTML = ''
+          + '<div class="empty-cart">'
+          +   '<h3>Nothing saved yet</h3>'
+          +   '<p>Tap the heart icon on any product to save it here for later.</p>'
+          +   '<a class="btn btn-primary" href="shop.html">Browse the collection</a>'
+          + '</div>';
+        return;
+      }
+      root.innerHTML = '<div class="product-grid">' + items.map(p => SITE.productCardHTML(p)).join('') + '</div>';
+    }
+    document.addEventListener('kline:wishchange', render);
+    render();
+  </script>
+</body>
+</html>

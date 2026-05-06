@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — K-LINE MEN</title>
+  <meta name="description" content="K-LINE MEN is a Kampala-based menswear store dedicated to premium-feeling pieces at honest prices, with WhatsApp ordering and country-wide delivery.">
+  <link rel="icon" type="image/png" href="assets/images/accessories/accessories-002.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <div class="eyebrow">About</div>
+        <h1>Premium style for real life.</h1>
+        <p>K-LINE MEN is built for men who want to look sharp without making dressing complicated.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:48px; align-items:center;">
+        <div>
+          <p style="font-size:17px; color:var(--ink-3); margin-bottom:18px;">We started K-LINE MEN with a single belief: men in Uganda deserve menswear that feels considered. Pieces that fit properly. Photos that show what you're actually getting. Prices that don't hide behind "request a quote."</p>
+          <p style="font-size:17px; color:var(--ink-3); margin-bottom:18px;">Every shirt, every shoe, every signature K-LINE piece is chosen so that one purchase can become a daily favourite. Whether you're buying your first dress shirt or your fifth blazer, we want the experience to feel calm — not cluttered.</p>
+          <p style="font-size:17px; color:var(--ink-3);">If you'd like advice on size, fit, or styling, the WhatsApp button is always there. A real human will reply.</p>
+          <a class="btn btn-primary" href="shop.html" style="margin-top:24px;">Shop the collection</a>
+        </div>
+        <div>
+          <img src="assets/images/suits/suits-001.png" alt="" style="border-radius:var(--radius); border:1px solid var(--line); background:var(--warm);">
+        </div>
+      </div>
+    </section>
+
+    <section class="warm-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="eyebrow">What we stand for</div>
+            <h2>Three things we won't compromise on.</h2>
+          </div>
+        </div>
+        <div class="trust-strip">
+          <div class="trust-card"><h3>Honest pricing</h3><p>Every product on the site has a clear UGX price. No "DM for price." No hidden mark-ups for new customers.</p></div>
+          <div class="trust-card"><h3>Real photography</h3><p>What you see is what arrives at your door. We don't use stock images we can't deliver.</p></div>
+          <div class="trust-card"><h3>Human support</h3><p>Sizing questions, style advice, delivery quirks — message us on WhatsApp and you'll talk to a real person.</p></div>
+          <div class="trust-card"><h3>Made to be worn</h3><p>Pieces are chosen for everyday use, not just photoshoots. Built to look better with wear.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="story">
+        <div>
+          <div class="eyebrow" style="color:#d9c0a2">Visit us</div>
+          <h2>Kampala &amp; nationwide.</h2>
+        </div>
+        <div>
+          <p>Browse, try, and pick up from our showroom in Kampala. If you're outside the city, we deliver across Uganda — confirmed by WhatsApp once you place an order.</p>
+          <p style="margin-top:8px;"><strong style="color:#fff;">WhatsApp:</strong> <a href="javascript:void(0)" id="wa-link" style="color:#d9c0a2; border-bottom: 1px solid;"></a></p>
+          <p><strong style="color:#fff;">Hours:</strong> Mon–Sat · 9am–7pm</p>
+          <a class="btn btn-bronze" href="contact.html" style="margin-top:18px;">Contact us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+    SITE.mount('about');
+    const link = document.getElementById('wa-link');
+    link.textContent = KLINE.WHATSAPP_DISPLAY;
+    link.href = KLINE.whatsappUrl('Hello K-LINE MEN!');
+    link.target = '_blank'; link.rel = 'noopener';
+  </script>
+</body>
+</html>

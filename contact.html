@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — K-LINE MEN</title>
+  <meta name="description" content="Reach K-LINE MEN by WhatsApp for the fastest reply, or send us a message — sizing, styling, delivery, anything.">
+  <link rel="icon" type="image/png" href="assets/images/accessories/accessories-002.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <div class="eyebrow">Contact</div>
+        <h1>Talk to us.</h1>
+        <p>WhatsApp is fastest — same-day replies during opening hours. Prefer email or a form? Use the message box below.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:48px;">
+        <div>
+          <h2 style="font-family:var(--display); font-size:36px; margin-bottom:8px; font-weight:600;">Reach us directly.</h2>
+          <p style="color:var(--muted); margin-bottom:24px;">For order questions, sizing, delivery, or styling advice — WhatsApp goes to a real person.</p>
+
+          <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:24px;">
+            <a class="btn btn-whatsapp" id="wa-btn" href="#" target="_blank" rel="noopener" style="justify-content:flex-start;"><span class="whatsapp-dot"></span> Message us on WhatsApp</a>
+            <a class="btn btn-secondary" href="mailto:hello@k-line-men.com" style="justify-content:flex-start;">Email — hello@k-line-men.com</a>
+          </div>
+
+          <div style="background:var(--warm); border:1px solid var(--line); border-radius:var(--radius); padding:24px;">
+            <h3 style="font-size:17px; margin-bottom:10px;">K-LINE MEN Showroom</h3>
+            <p style="color:var(--muted); margin-bottom:6px;">Kampala, Uganda</p>
+            <p style="color:var(--muted); margin-bottom:6px;">Open Mon–Sat · 9am–7pm</p>
+            <p style="color:var(--muted);">WhatsApp: <span id="wa-display"></span></p>
+          </div>
+        </div>
+
+        <div>
+          <h2 style="font-family:var(--display); font-size:36px; margin-bottom:8px; font-weight:600;">Send a message.</h2>
+          <p style="color:var(--muted); margin-bottom:20px;">We reply within one business day. For urgent orders, please use WhatsApp.</p>
+
+          <form id="contact-form" novalidate>
+            <div class="field">
+              <label for="cf-name">Your name</label>
+              <input id="cf-name" type="text" required autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="cf-channel">Best way to reach you</label>
+              <input id="cf-channel" type="text" placeholder="WhatsApp number or email" required>
+            </div>
+            <div class="field">
+              <label for="cf-msg">Message</label>
+              <textarea id="cf-msg" required placeholder="Sizing, an outfit, delivery, anything…"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Send via WhatsApp</button>
+            <p style="color:var(--muted); font-size:12px; margin-top:10px;">Submitting opens WhatsApp with your message prefilled — that way you keep a copy of the conversation too.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+    SITE.mount('contact');
+    document.getElementById('wa-btn').href = KLINE.whatsappUrl('Hello K-LINE MEN, I have a question.');
+    document.getElementById('wa-display').textContent = KLINE.WHATSAPP_DISPLAY;
+
+    document.getElementById('contact-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('cf-name').value.trim();
+      const channel = document.getElementById('cf-channel').value.trim();
+      const msg = document.getElementById('cf-msg').value.trim();
+      if (!name || !channel || !msg) {
+        SITE.showToast('Please fill in every field');
+        return;
+      }
+      const compiled = 'Hello K-LINE MEN,\n\n' + msg + '\n\nName: ' + name + '\nReach me on: ' + channel;
+      window.open(KLINE.whatsappUrl(compiled), '_blank', 'noopener');
+    });
+  </script>
+</body>
+</html>
