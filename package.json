@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "optimize:images": "node scripts/optimize-images.mjs"
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "generate:favicons": "node scripts/generate-favicons.mjs"
   },
   "devDependencies": {
     "sharp": "^0.34.0"
