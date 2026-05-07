@@ -1452,6 +1452,44 @@ section { padding: 80px 0; }
   max-width: 620px;
 }
 
+/* ───────── Legal pages (privacy / terms) ───────── */
+/* Reading-optimised: max-width caps line length, comfortable line-height,
+   clear heading rhythm. Lives inside the existing `.container`, no extra
+   wrapper-level layout needed. */
+.legal-doc {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-3);
+}
+.legal-doc .legal-meta {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--bronze-dark);
+  margin-bottom: 28px;
+}
+.legal-doc h2 {
+  font-family: var(--display);
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 36px 0 12px;
+}
+.legal-doc h2:first-of-type { margin-top: 16px; }
+.legal-doc p { margin-bottom: 14px; }
+.legal-doc ul { margin: 0 0 18px 22px; }
+.legal-doc li { margin-bottom: 8px; }
+.legal-doc strong { color: var(--ink); font-weight: 700; }
+.legal-doc a {
+  color: var(--bronze-dark);
+  border-bottom: 1px solid currentColor;
+}
+.legal-doc a:hover { color: var(--ink); }
+
 /* ───────── Form (contact) ───────── */
 .field { margin-bottom: 18px; }
 .field label {

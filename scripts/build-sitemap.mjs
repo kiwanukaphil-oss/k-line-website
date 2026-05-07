@@ -22,7 +22,9 @@ const STATIC_PAGES = [
   { path: '/contact.html',  priority: '0.6' },
   { path: '/faq.html',      priority: '0.5' },
   { path: '/cart.html',     priority: '0.3' },
-  { path: '/wishlist.html', priority: '0.3' }
+  { path: '/wishlist.html', priority: '0.3' },
+  { path: '/privacy.html',  priority: '0.3' },
+  { path: '/terms.html',    priority: '0.3' }
 ];
 
 async function loadCatalog() {

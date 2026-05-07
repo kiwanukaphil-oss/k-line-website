@@ -267,7 +267,7 @@
       +         '</a>'
       +       '</div>'
       +       '<div class="footer-col"><h3>Shop</h3>' + cats + '<a href="shop.html">All products</a></div>'
-      +       '<div class="footer-col"><h3>Help</h3><a href="faq.html">FAQs</a><a href="contact.html">Contact</a><a href="about.html">About</a><a href="faq.html#delivery">Delivery & returns</a></div>'
+      +       '<div class="footer-col"><h3>Help</h3><a href="faq.html">FAQs</a><a href="contact.html">Contact</a><a href="about.html">About</a><a href="faq.html#delivery">Delivery & returns</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>'
       +       '<div class="footer-col"><h3>Visit</h3>'
       +         '<p>WhatsApp: <a href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN!') + '" target="_blank" rel="noopener">' + window.KLINE.WHATSAPP_DISPLAY + '</a></p>'
       +         '<p>Call: <a href="tel:+' + window.KLINE.CALL_RAW + '">' + window.KLINE.CALL_DISPLAY + '</a></p>'

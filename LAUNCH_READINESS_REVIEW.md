@@ -69,7 +69,7 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 - **No related-product fallback when category is small.** [product.html:196](product.html#L196) — coats has 1 product, so the "More from this category" rail will be empty.
 
 ### C5. Trust gaps
-- **No privacy policy or terms.** Site collects names, contact details, and (on WhatsApp) location and payment. Mandatory under Uganda Data Protection and Privacy Act (2019). Add a short `/privacy.html` and `/terms.html` linked in the footer.
+- ~~**No privacy policy or terms.**~~ ✅ **Resolved 2026-05-07** — [privacy.html](privacy.html) and [terms.html](terms.html) drafted to UDPPA 2019 standards. Privacy covers data categories, lawful basis, third-party processors (Meta/WhatsApp, Formspree, hosting, couriers), cross-border transfers, retention (24 months), and full UDPPA rights including right to lodge with the Personal Data Protection Office of Uganda. Terms cover ordering via WhatsApp, UGX pricing, payment methods, delivery, returns/exchanges, IP, liability cap, governing law (Uganda). Footer Help column links both. ⚠️ **Owner should review before launch** — no legal-entity registration number is included; if K-LINE MEN trades under a registered business name, add it to the "Who we are" section of both docs.
 - **No physical proof.** "Fraine Building, Ntinda" is fine, but a single map embed on the contact page would be worth a lot.
 - **No review/social proof.** "What real men keep buying" implies bestsellers, but no count, no testimonial, no IG embed, no "as worn by". The IG strip uses fallback catalog photos — same images that already appear elsewhere — which actually undermines trust ("we don't have a real Instagram?"). Drop 6 real screenshots into `assets/images/instagram/`.
 
@@ -83,7 +83,7 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 - ~~**Sitemap dates are baked-in.**~~ ✅ **Resolved 2026-05-07** — replaced PowerShell snippet with [scripts/build-sitemap.mjs](scripts/build-sitemap.mjs). Run `npm run build:sitemap` to rebuild — emits 213 URLs (7 static + 17 category + 189 product) with today's `<lastmod>` and per-URL priority. Now part of `npm run build:all`.
 - ~~**Most product pages share a generic title until JS runs.**~~ ✅ **Resolved 2026-05-07** — [scripts/prerender-products.mjs](scripts/prerender-products.mjs) emits one HTML file per product at `/product/{id}.html` with pre-baked `<title>`, `<meta description>`, `<link rel="canonical">`, Open Graph, Twitter card, and JSON-LD. The dynamic `/product.html?id=X` URL still works (canonical points at the clean URL). Internal product links across the site now point at the clean URL form. `<base href="../">` in pre-rendered files keeps relative paths resolving correctly.
 - **No canonical tags on shop / category pages.** [shop.html](shop.html) doesn't emit `<link rel="canonical">`. With URL-state filters (`?cat=blazers`), Google may index every filtered permutation as duplicate content. Add `<link rel="canonical" href="https://k-line-men.com/shop.html">` to the shop page (or canonical with category param when one is selected). *(Still open — small task, batch with item #5 below.)*
-- **OG image is a single suit photo.** [index.html:14](index.html#L14) — `og:image` points to `assets/images/suits/suits-001.png` at 1.5 MB. Generate a proper 1200×630 OG card (logo + tagline + product shot) and serve it at <300 KB. *(Still open — item #15 in priority plan.)*
+- ~~**OG image is a single suit photo.**~~ ✅ **Resolved 2026-05-07** — [scripts/generate-og-card.mjs](scripts/generate-og-card.mjs) composites the navy-suit hero with a left-side dark gradient panel and SVG-rendered brand text/tagline at 1200×630. Output `og-card.jpg` is 44.9 KB. Run `npm run generate:og` (also part of `build:all`). [index.html:14](index.html#L14) now points at the absolute URL `https://k-line-men.com/og-card.jpg` plus `og:image:width/height` and `og:url`. PDPs keep the product photo as `og:image` (set at prerender time) so social previews show the actual product, not the brand card.
 
 ---
 
@@ -336,11 +336,11 @@ Site uses `transition` and `transform: scale` everywhere. Honor `prefers-reduced
 8. ~~**Wire the "Need help?" size link**~~ ✅ **Done 2026-05-07** — opens WhatsApp prefilled with product context + sizing prompts; focus ring added.
 9. ~~**Add JSON-LD: Organization + LocalBusiness on home/footer; Product + Offer on PDP.**~~ ✅ **Done 2026-05-07** — see C7. Includes Breadcrumb on PDP. Auto-injected via SITE.mount() on every page; pre-rendered PDP files also ship static JSON-LD for crawlers that don't run JS.
 10. ~~**Pre-render PDP `<title>` and `<meta description>`**~~ ✅ **Done 2026-05-07** — [scripts/prerender-products.mjs](scripts/prerender-products.mjs) generates 189 product pages. See C7. Note the canonical-URL switch from `/product.html?id=X` to `/product/{id}.html` — old URLs still work but redirect intent is captured via `<link rel="canonical">`. Optional: add a Netlify `_redirects` line `/product.html  /product/:id  301  id=:id` to push old links onto the canonical form.
-11. **Add Privacy Policy + Terms pages.** [C5] — UDPPA compliance, footer-link them.
+11. ~~**Add Privacy Policy + Terms pages.**~~ ✅ **Done 2026-05-07** — [privacy.html](privacy.html) + [terms.html](terms.html). See C5. ⚠️ Owner review recommended for legal-entity / registration details.
 12. **Replace IG strip fallback** with real screenshots from the existing [Instagram/](Instagram/) folder, or hide the section. [D5]
 13. **Real second image + fabric/care content for the top 10 products** (the ones in hero, signature, and bestsellers). [C4] — the rest can roll out post-launch.
 14. ~~**Fix nested `<button>` inside `<a>` on product cards.**~~ ✅ **Done 2026-05-07** — `.product-actions` is now a sibling of `.product-link` inside the `.product-card` article.
-15. **Update OG image** to a proper 1200×630 < 300 KB social card. [C7]
+15. ~~**Update OG image**~~ ✅ **Done 2026-05-07** — `og-card.jpg` at 44.9 KB (target was <300 KB). See C7.
 16. **Set proper Cache-Control headers** at the CDN. [F6]
 
 ### Should fix soon after launch (weeks 3–6)
