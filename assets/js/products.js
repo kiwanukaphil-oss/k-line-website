@@ -273,8 +273,8 @@ window.KLINE = {
   whatsappUrl: (message) => 'https://wa.me/' + window.KLINE.WHATSAPP_RAW + '?text=' + encodeURIComponent(message),
   WHATSAPP_DISPLAY: '+256 777 466 979',
   WHATSAPP_RAW:     '256777466979',
-  CALL_DISPLAY:     '+256 704 677 111',
-  CALL_RAW:         '256704677111',
+  CALL_DISPLAY:     '+256 704 667 111',
+  CALL_RAW:         '256704667111',
 
   /* Social */
   INSTAGRAM_HANDLE: '@k_linemen',

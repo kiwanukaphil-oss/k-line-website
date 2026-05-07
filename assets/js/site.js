@@ -30,6 +30,37 @@
     instagram: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'
   };
 
+  /* ─────────── Picture markup helper ─────────── */
+  // Emits a <picture> with three WebP variants (400w/800w/1200w) and a PNG
+  // fallback in <img>. Source PNGs are converted by scripts/optimize-images.mjs;
+  // every .png in the catalog has matching <name>-400.webp / -800.webp / .webp
+  // siblings. Anything that isn't a .png (e.g. ig-1.jpg in the IG strip) falls
+  // back to a plain <img> tag because no WebP variants were generated for it.
+  //
+  //   opts.sizes   — `sizes` attribute, defaults to a 4-up product grid
+  //   opts.eager   — true for above-the-fold images (hero, PDP main)
+  //   opts.onerror — inline error handler, used by the IG strip fallback
+  function pictureHTML(src, alt, opts) {
+    opts = opts || {};
+    alt = (alt || '').replace(/"/g, '&quot;');
+    const sizes = opts.sizes || '(max-width:640px) 50vw, (max-width:1080px) 33vw, 25vw';
+    const loadAttrs = opts.eager
+      ? ' loading="eager" fetchpriority="high" decoding="async"'
+      : ' loading="lazy" decoding="async"';
+    const onErrorAttr = opts.onerror ? ' onerror="' + opts.onerror + '"' : '';
+    const isPng = /\.png$/i.test(src);
+    if (!isPng) {
+      // No WebP siblings — render a plain <img>.
+      return '<img src="' + src + '" alt="' + alt + '"' + loadAttrs + onErrorAttr + '>';
+    }
+    const base = src.replace(/\.png$/i, '');
+    return ''
+      + '<picture>'
+      +   '<source type="image/webp" srcset="' + base + '-400.webp 400w, ' + base + '-800.webp 800w, ' + base + '.webp 1200w" sizes="' + sizes + '">'
+      +   '<img src="' + src + '" alt="' + alt + '"' + loadAttrs + onErrorAttr + '>'
+      + '</picture>';
+  }
+
   /* ─────────── Storage helpers ─────────── */
   // localStorage is the only persistence — no backend.
   const LS_CART = 'kline_cart_v1';
@@ -266,15 +297,18 @@
                 : null;
     const wishActive = inWishlist(product.id) ? ' is-active' : '';
     const wishIcon = inWishlist(product.id) ? ICONS.heartFill : ICONS.heart;
+    // Wishlist button lives as a sibling of the link, not a child — nesting an
+    // interactive <button> inside the <a> is invalid HTML and breaks keyboard
+    // tabbing (Enter on the heart fires both the wishlist toggle and the link).
     return ''
       + '<article class="product-card">'
+      +   '<div class="product-actions">'
+      +     '<button type="button" class="wish-btn' + wishActive + '" data-id="' + product.id + '" aria-label="Toggle wishlist" title="Save to wishlist">' + wishIcon + '</button>'
+      +   '</div>'
       +   '<a class="product-link" href="product.html?id=' + product.id + '" aria-label="' + product.name + '">'
       +     '<div class="product-media">'
       +       (badge ? '<span class="product-badge ' + (badge.cls || '') + '">' + badge.label + '</span>' : '')
-      +       '<div class="product-actions">'
-      +         '<button type="button" class="wish-btn' + wishActive + '" data-id="' + product.id + '" aria-label="Toggle wishlist" title="Save to wishlist">' + wishIcon + '</button>'
-      +       '</div>'
-      +       '<img loading="lazy" src="' + product.image + '" alt="' + product.name + '">'
+      +       pictureHTML(product.image, product.name)
       +     '</div>'
       +     '<h3>' + product.name + '</h3>'
       +     '<div class="product-meta">' + (product.color ? product.color.name + ' · ' : '') + categoryLabel(product.category) + '</div>'
@@ -371,7 +405,7 @@
     mount,
     getCart, addToCart, updateQty, removeFromCart, cartTotal, cartCount,
     getWishlist, toggleWishlist, inWishlist,
-    showToast, productCardHTML, categoryLabel,
+    showToast, productCardHTML, categoryLabel, pictureHTML,
     checkoutOnWhatsApp, askAboutProduct,
     refreshHeaderCounts
   };

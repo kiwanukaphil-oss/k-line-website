@@ -43,20 +43,10 @@
           </div>
         </div>
 
-        <div class="hero-showcase" aria-label="K-LINE MEN signature pieces">
-          <a class="hero-photo hp-tall" href="product.html?id=suits-001">
-            <img src="assets/images/suits/suits-001.png" alt="Royal Navy 2-Piece Suit">
-            <span class="hp-label">The Navy Suit</span>
-          </a>
-          <a class="hero-photo" href="product.html?id=polos-001">
-            <img src="assets/images/polos/polos-001.png" alt="K-LINE Signature Navy Polo">
-            <span class="hp-label">Signature Polo</span>
-          </a>
-          <a class="hero-photo" href="product.html?id=shoes-001">
-            <img src="assets/images/shoes/shoes-001.png" alt="Walnut Cap-Toe Oxford">
-            <span class="hp-label">Walnut Oxford</span>
-          </a>
-        </div>
+        <!-- Hero photos render via JS so they share the SITE.pictureHTML helper
+             (WebP <source> + PNG fallback) and get fetchpriority="high" for
+             above-the-fold paint. -->
+        <div class="hero-showcase" id="hero-showcase" aria-label="K-LINE MEN signature pieces"></div>
       </div>
     </section>
 
@@ -159,9 +149,9 @@
     <section>
       <div class="container">
         <article class="look-week" id="look-week">
-          <div class="look-week-media">
+          <div class="look-week-media" id="lw-media">
             <span class="lw-badge">Look of the week</span>
-            <img id="lw-image" src="" alt="">
+            <!-- <picture> appended via JS once LOOK_OF_WEEK_IDS resolves -->
           </div>
           <div class="look-week-body">
             <div class="eyebrow">Friday smart</div>
@@ -251,6 +241,23 @@
   <script>
     SITE.mount('home');
 
+    // Hero showcase — three product photos, eager-loaded for above-the-fold paint.
+    const HERO_PHOTOS = [
+      { id: 'suits-001', label: 'The Navy Suit',     alt: 'Royal Navy 2-Piece Suit',  cls: 'hero-photo hp-tall' },
+      { id: 'polos-001', label: 'Signature Polo',    alt: 'K-LINE Signature Navy Polo', cls: 'hero-photo' },
+      { id: 'shoes-001', label: 'Walnut Oxford',     alt: 'Walnut Cap-Toe Oxford',    cls: 'hero-photo' }
+    ];
+    const heroSizes = '(max-width:980px) 50vw, 25vw';
+    document.getElementById('hero-showcase').innerHTML = HERO_PHOTOS.map(h => {
+      const p = KLINE.byId(h.id);
+      const src = p ? p.image : '';
+      return ''
+        + '<a class="' + h.cls + '" href="product.html?id=' + h.id + '">'
+        +   SITE.pictureHTML(src, h.alt, { eager: true, sizes: heroSizes })
+        +   '<span class="hp-label">' + h.label + '</span>'
+        + '</a>';
+    }).join('');
+
     // Categories: pick a representative image per category. Categories without
     // an entry here render as "Coming soon" stub cards so newly-added rails
     // (e.g. sandals, caps, gym) stay visible on the homepage before product
@@ -286,7 +293,7 @@
       if (img && count > 0) {
         return ''
           + '<a class="category-card" href="shop.html?cat=' + slug + '">'
-          +   '<img loading="lazy" src="' + img + '" alt="' + cat.label + '">'
+          +   SITE.pictureHTML(img, cat.label)
           +   '<div class="label"><span class="count">' + count + ' pieces</span><h3>' + cat.label + '</h3></div>'
           + '</a>';
       }
@@ -321,28 +328,33 @@
     const lookPieces = LOOK_OF_WEEK_IDS.map(id => KLINE.byId(id)).filter(Boolean);
     if (lookPieces.length) {
       const hero = lookPieces[0];
-      document.getElementById('lw-image').src = hero.image;
-      document.getElementById('lw-image').alt = hero.name;
+      document.getElementById('lw-media').insertAdjacentHTML(
+        'beforeend',
+        SITE.pictureHTML(hero.image, hero.name, { sizes: '(max-width:980px) 100vw, 55vw' })
+      );
       document.getElementById('lw-pieces').innerHTML = lookPieces.map(p =>
         '<a href="product.html?id=' + p.id + '">' + p.name + '</a>'
       ).join('');
     }
 
     /* ─── Instagram strip ───
-       Drop 6 actual IG post images into assets/images/instagram/ (named ig-1
-       through ig-6) and the strip will pick them up. Until then we fall back
-       to curated catalog imagery so the layout is never empty. */
+       Until real IG screenshots are dropped into assets/images/instagram/, we
+       render curated catalog imagery via the WebP pipeline so the layout is
+       fast and never empty. When real ig-X.jpg images are added, give each one
+       its own WebP variants (or extend optimize-images.mjs to handle .jpg) and
+       point the `image` field at the new path. */
     const IG_TILES = [
-      { src: 'assets/images/instagram/ig-1.jpg', fallback: 'assets/images/suits/suits-001.png',     caption: 'Royal navy 2-piece' },
-      { src: 'assets/images/instagram/ig-2.jpg', fallback: 'assets/images/polos/polos-001.png',     caption: 'Signature polo Friday' },
-      { src: 'assets/images/instagram/ig-3.jpg', fallback: 'assets/images/shoes/shoes-001.png',     caption: 'Walnut Oxford' },
-      { src: 'assets/images/instagram/ig-4.jpg', fallback: 'assets/images/jackets/jackets-002.png', caption: 'Saturday in leather' },
-      { src: 'assets/images/instagram/ig-5.jpg', fallback: 'assets/images/watches/watches-001.png', caption: 'Two-tone on wrist' },
-      { src: 'assets/images/instagram/ig-6.jpg', fallback: 'assets/images/blazers/blazers-001.png', caption: 'Hopsack blazer fit' }
+      { image: 'assets/images/suits/suits-001.png',     caption: 'Royal navy 2-piece' },
+      { image: 'assets/images/polos/polos-001.png',     caption: 'Signature polo Friday' },
+      { image: 'assets/images/shoes/shoes-001.png',     caption: 'Walnut Oxford' },
+      { image: 'assets/images/jackets/jackets-002.png', caption: 'Saturday in leather' },
+      { image: 'assets/images/watches/watches-001.png', caption: 'Two-tone on wrist' },
+      { image: 'assets/images/blazers/blazers-001.png', caption: 'Hopsack blazer fit' }
     ];
+    const igSizes = '(max-width:640px) 50vw, (max-width:1080px) 33vw, 16vw';
     document.getElementById('ig-grid').innerHTML = IG_TILES.map(tile => ''
       + '<a class="ig-tile" href="https://www.instagram.com/k_linemen/" target="_blank" rel="noopener" aria-label="' + tile.caption + ' on Instagram">'
-      +   '<img loading="lazy" src="' + tile.src + '" onerror="this.onerror=null;this.src=\'' + tile.fallback + '\';" alt="' + tile.caption + '">'
+      +   SITE.pictureHTML(tile.image, tile.caption, { sizes: igSizes })
       +   '<span class="ig-tile-label">@k_linemen · ' + tile.caption + '</span>'
       + '</a>').join('');
     document.getElementById('ig-handle-icon').innerHTML = SITE.icons.instagram;

@@ -51,6 +51,13 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 img, svg { max-width: 100%; display: block; }
+/* `display: contents` makes <picture> layout-transparent — its <img> child is
+   rendered as if it were a direct child of the parent (e.g. .product-media),
+   so existing selectors like `.product-media img { width:100%; height:100% }`
+   keep working unchanged. Using `display: block` instead breaks aspect-ratio'd
+   containers because the picture itself has no intrinsic height, so the img's
+   `height: 100%` resolves to 0. */
+picture { display: contents; }
 button { font-family: inherit; cursor: pointer; border: 0; background: transparent; }
 input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
 
@@ -269,6 +276,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 .icon-btn:focus-visible,
 .pill:focus-visible,
 .size-option:focus-visible,
+.size-link:focus-visible,
 .color-option:focus-visible,
 .qty button:focus-visible,
 .wish-btn:focus-visible,

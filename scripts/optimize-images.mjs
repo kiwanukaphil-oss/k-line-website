@@ -9,11 +9,13 @@
    ============================================================================ */
 
 import { promises as fs } from 'node:fs';
-import { createReadStream } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\//, '')), '..');
+// fileURLToPath is the cross-platform idiom — handles Windows drive letters
+// and URL-encoded spaces in `OneDrive` paths that broke the previous resolver.
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IMAGES_DIR = path.join(ROOT, 'assets', 'images');
 
 const VARIANTS = [

@@ -91,7 +91,7 @@
       const pdpHTML = ''
         + '<div class="pdp-gallery single">'
         +   '<div class="thumbs"></div>'
-        +   '<div class="pdp-main"><img src="' + product.image + '" alt="' + product.name + '"></div>'
+        +   '<div class="pdp-main">' + SITE.pictureHTML(product.image, product.name, { eager: true, sizes: '(max-width:980px) 100vw, 50vw' }) + '</div>'
         + '</div>'
         + '<div class="pdp-info">'
         +   '<div class="category-tag">' + SITE.categoryLabel(product.category) + '</div>'
@@ -108,7 +108,7 @@
 
         +   (product.sizes && product.sizes[0] !== 'One Size' ? ''
         +     '<div class="option-row">'
-        +       '<div class="option-label"><span>Choose size</span><a class="size-link" id="size-help">Need help?</a></div>'
+        +       '<div class="option-label"><span>Choose size</span><button type="button" class="size-link" id="size-help">Need help?</button></div>'
         +       '<div class="size-options" id="size-options">'
         +         product.sizes.map(s => '<button type="button" class="size-option" data-size="' + s + '">' + s + '</button>').join('')
         +       '</div>'
@@ -186,6 +186,21 @@
       document.getElementById('ask-whatsapp').addEventListener('click', () => {
         SITE.askAboutProduct(product, selectedSize);
       });
+
+      // Size help: open WhatsApp with a prefilled fit/sizing question scoped to
+      // the current product. Replaces the previous unwired anchor that was
+      // styled like a link but did nothing on click.
+      const sizeHelp = document.getElementById('size-help');
+      if (sizeHelp) {
+        sizeHelp.addEventListener('click', () => {
+          const msg = 'Hello K-LINE MEN, I need help choosing a size for:\n\n' +
+                      product.name + '\n' +
+                      KLINE.formatUGX(product.price) + '\n\n' +
+                      'My usual size is: \nMy chest/waist measurements are: \n' +
+                      'What would you recommend?';
+          window.open(KLINE.whatsappUrl(msg), '_blank', 'noopener');
+        });
+      }
 
       // PDP wishlist heart — uses the same delegate by giving it data-id and
       // .wish-btn class via JS so the global handler picks it up.

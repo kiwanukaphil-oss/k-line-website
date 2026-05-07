@@ -32,7 +32,10 @@
           <a class="btn btn-primary" href="shop.html" style="margin-top:24px;">Shop the collection</a>
         </div>
         <div>
-          <img src="assets/images/suits/suits-001.png" alt="" style="border-radius:var(--radius); border:1px solid var(--line); background:var(--warm);">
+          <picture>
+            <source type="image/webp" srcset="assets/images/suits/suits-001-400.webp 400w, assets/images/suits/suits-001-800.webp 800w, assets/images/suits/suits-001.webp 1200w" sizes="(max-width:980px) 100vw, 50vw">
+            <img src="assets/images/suits/suits-001.png" alt="" loading="lazy" decoding="async" style="border-radius:var(--radius); border:1px solid var(--line); background:var(--warm);">
+          </picture>
         </div>
       </div>
     </section>
