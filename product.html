@@ -63,9 +63,12 @@
   <script>
     SITE.mount('shop');
 
-    /* ───── Resolve product from URL ───── */
+    /* ───── Resolve product ─────
+       Pre-rendered pages (/product/{id}.html) set window.PRODUCT_ID before
+       products.js loads; the dynamic /product.html?id=X URL falls through to
+       the URL parameter. Both paths converge on the same render code. */
     const params = new URLSearchParams(location.search);
-    const id = params.get('id');
+    const id = window.PRODUCT_ID || params.get('id');
     const product = id && KLINE.byId(id);
 
     if (!product) {
@@ -79,6 +82,22 @@
     } else {
       document.title = product.name + ' — K-LINE MEN';
       document.querySelector('meta[name="description"]').setAttribute('content', product.description || (product.name + ' from K-LINE MEN.'));
+
+      // Canonical URL points at the SEO-clean pre-rendered URL even when the
+      // user is on /product.html?id=X — search engines will index the
+      // canonical and treat the query-string URL as a duplicate.
+      const canonicalUrl = 'https://k-line-men.com/product/' + product.id + '.html';
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        document.head.appendChild(canonical);
+      }
+      canonical.href = canonicalUrl;
+
+      // Product + Offer + Breadcrumb JSON-LD. Skipped if the pre-rendered HTML
+      // already shipped a static version (helper checks for the script id).
+      SITE.injectProductJSONLD(product);
 
       /* ───── Breadcrumbs ───── */
       document.getElementById('breadcrumbs').innerHTML = ''

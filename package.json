@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "optimize:images": "node scripts/optimize-images.mjs",
-    "generate:favicons": "node scripts/generate-favicons.mjs"
+    "generate:favicons": "node scripts/generate-favicons.mjs",
+    "prerender:products": "node scripts/prerender-products.mjs",
+    "build:sitemap": "node scripts/build-sitemap.mjs",
+    "build:all": "npm run optimize:images && npm run generate:favicons && npm run prerender:products && npm run build:sitemap"
   },
   "devDependencies": {
     "sharp": "^0.34.0"

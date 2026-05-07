@@ -305,7 +305,7 @@
       +   '<div class="product-actions">'
       +     '<button type="button" class="wish-btn' + wishActive + '" data-id="' + product.id + '" aria-label="Toggle wishlist" title="Save to wishlist">' + wishIcon + '</button>'
       +   '</div>'
-      +   '<a class="product-link" href="product.html?id=' + product.id + '" aria-label="' + product.name + '">'
+      +   '<a class="product-link" href="product/' + product.id + '.html" aria-label="' + product.name + '">'
       +     '<div class="product-media">'
       +       (badge ? '<span class="product-badge ' + (badge.cls || '') + '">' + badge.label + '</span>' : '')
       +       pictureHTML(product.image, product.name)
@@ -397,6 +397,103 @@
     if (footerSlot) footerSlot.outerHTML = renderFooter();
     wireMobileDrawer();
     wireGlobalDelegates();
+    injectOrganizationJSONLD();
+  }
+
+  /* ─────────── Organization / LocalBusiness JSON-LD ───────────
+     Injected once per page from mount(). Drives the Knowledge Panel and rich
+     local-business search results (address, hours, phone, social). Pre-rendered
+     PDP pages also include Product + Offer + Breadcrumb JSON-LD (added at
+     build time by scripts/prerender-products.mjs); search engines merge the
+     two by URL. Skip injection if a static script with the same id already
+     exists (so prerendered files don't double up). */
+  function injectOrganizationJSONLD() {
+    if (document.getElementById('jsonld-organization')) return;
+    const data = {
+      '@context': 'https://schema.org',
+      '@type': 'ClothingStore',
+      'name': 'K-LINE MEN',
+      'description': 'Premium menswear in Kampala — shirts, suits, blazers, shoes, watches and accessories. Order on WhatsApp, delivered across Uganda.',
+      'url': 'https://k-line-men.com/',
+      'logo': 'https://k-line-men.com/icon-512.png',
+      'image': 'https://k-line-men.com/apple-touch-icon.png',
+      'telephone': '+' + window.KLINE.WHATSAPP_RAW,
+      'email': window.KLINE.EMAIL,
+      'priceRange': 'UGX 35,000 – UGX 950,000',
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': 'Fraine Building',
+        'addressLocality': 'Ntinda',
+        'addressRegion': 'Kampala',
+        'addressCountry': 'UG'
+      },
+      'openingHoursSpecification': [{
+        '@type': 'OpeningHoursSpecification',
+        'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'opens': '09:00',
+        'closes': '19:00'
+      }],
+      'sameAs': [window.KLINE.INSTAGRAM_URL]
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'jsonld-organization';
+    script.textContent = JSON.stringify(data);
+    document.head.appendChild(script);
+  }
+
+  /* ─────────── PDP Product + Breadcrumb JSON-LD ───────────
+     Called from product.html once the product is resolved. Pre-rendered files
+     under /product/{id}.html emit a static version of this same payload at
+     build time (same script id), and the JS path skips re-injection when the
+     static one is present — dynamic /product.html?id=X URLs fall back to JS
+     injection so they're still indexable. */
+  function injectProductJSONLD(product) {
+    if (!product || document.getElementById('jsonld-product')) return;
+    const productUrl = 'https://k-line-men.com/product/' + product.id + '.html';
+    const imageUrl = 'https://k-line-men.com/' + product.image;
+    const productData = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      'name': product.name,
+      'description': product.description || '',
+      'sku': product.id.toUpperCase(),
+      'image': imageUrl,
+      'url': productUrl,
+      'brand': { '@type': 'Brand', 'name': 'K-LINE MEN' },
+      'category': categoryLabel(product.category),
+      'offers': {
+        '@type': 'Offer',
+        'priceCurrency': 'UGX',
+        'price': product.price,
+        'availability': 'https://schema.org/InStock',
+        'url': productUrl,
+        'seller': { '@type': 'Organization', 'name': 'K-LINE MEN' }
+      }
+    };
+    if (product.color && product.color.name) productData.color = product.color.name;
+    const productScript = document.createElement('script');
+    productScript.type = 'application/ld+json';
+    productScript.id = 'jsonld-product';
+    productScript.textContent = JSON.stringify(productData);
+    document.head.appendChild(productScript);
+
+    // Breadcrumb: Home > Shop > {Category} > {Product Name}
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://k-line-men.com/' },
+        { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': 'https://k-line-men.com/shop.html' },
+        { '@type': 'ListItem', 'position': 3, 'name': categoryLabel(product.category), 'item': 'https://k-line-men.com/shop.html?cat=' + product.category },
+        { '@type': 'ListItem', 'position': 4, 'name': product.name, 'item': productUrl }
+      ]
+    };
+    const breadcrumbScript = document.createElement('script');
+    breadcrumbScript.type = 'application/ld+json';
+    breadcrumbScript.id = 'jsonld-breadcrumb';
+    breadcrumbScript.textContent = JSON.stringify(breadcrumb);
+    document.head.appendChild(breadcrumbScript);
   }
 
   /* ─────────── Public surface ─────────── */
@@ -407,6 +504,7 @@
     getWishlist, toggleWishlist, inWishlist,
     showToast, productCardHTML, categoryLabel, pictureHTML,
     checkoutOnWhatsApp, askAboutProduct,
+    injectProductJSONLD,
     refreshHeaderCounts
   };
 })();

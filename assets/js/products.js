@@ -275,8 +275,16 @@ window.KLINE = {
   WHATSAPP_RAW:     '256777466979',
   CALL_DISPLAY:     '+256 704 667 111',
   CALL_RAW:         '256704667111',
+  EMAIL:            'klinedesignstudio@gmail.com',
 
   /* Social */
   INSTAGRAM_HANDLE: '@k_linemen',
-  INSTAGRAM_URL:    'https://www.instagram.com/k_linemen/'
+  INSTAGRAM_URL:    'https://www.instagram.com/k_linemen/',
+
+  /* Contact form provider — Formspree.
+     Sign up at https://formspree.io, create a form pointed at the EMAIL above,
+     and replace YOUR_FORM_ID with the form ID Formspree gives you. The contact
+     page will POST submissions to this endpoint and fall back to WhatsApp if
+     the network fails or if this is still the placeholder. */
+  FORMSPREE_ENDPOINT: 'https://formspree.io/f/YOUR_FORM_ID'
 };

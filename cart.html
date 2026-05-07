@@ -60,9 +60,9 @@
         const sub = p.price * item.qty;
         return ''
           + '<div class="cart-item" data-key="' + item.key + '">'
-          +   '<a class="ci-image" href="product.html?id=' + p.id + '">' + SITE.pictureHTML(p.image, p.name, { sizes: '110px' }) + '</a>'
+          +   '<a class="ci-image" href="product/' + p.id + '.html">' + SITE.pictureHTML(p.image, p.name, { sizes: '110px' }) + '</a>'
           +   '<div>'
-          +     '<h3><a href="product.html?id=' + p.id + '">' + p.name + '</a></h3>'
+          +     '<h3><a href="product/' + p.id + '.html">' + p.name + '</a></h3>'
           +     '<div class="ci-meta">' + (p.color ? p.color.name + ' · ' : '') + (item.size ? 'Size ' + item.size + ' · ' : '') + SITE.categoryLabel(p.category) + '</div>'
           +     '<div class="ci-price">' + KLINE.formatUGX(sub) + ' <span style="color:var(--muted); font-weight:600; font-size:13px;">(' + KLINE.formatUGX(p.price) + ' each)</span></div>'
           +   '</div>'

@@ -255,7 +255,7 @@
       const p = KLINE.byId(h.id);
       const src = p ? p.image : '';
       return ''
-        + '<a class="' + h.cls + '" href="product.html?id=' + h.id + '">'
+        + '<a class="' + h.cls + '" href="product/' + h.id + '.html">'
         +   SITE.pictureHTML(src, h.alt, { eager: true, sizes: heroSizes })
         +   '<span class="hp-label">' + h.label + '</span>'
         + '</a>';
@@ -336,7 +336,7 @@
         SITE.pictureHTML(hero.image, hero.name, { sizes: '(max-width:980px) 100vw, 55vw' })
       );
       document.getElementById('lw-pieces').innerHTML = lookPieces.map(p =>
-        '<a href="product.html?id=' + p.id + '">' + p.name + '</a>'
+        '<a href="product/' + p.id + '.html">' + p.name + '</a>'
       ).join('');
     }
 

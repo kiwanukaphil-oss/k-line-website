@@ -37,7 +37,7 @@
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:24px;">
             <a class="btn btn-whatsapp" id="wa-btn" href="#" target="_blank" rel="noopener" style="justify-content:flex-start;"><span class="whatsapp-dot"></span> Message us on WhatsApp</a>
             <a class="btn btn-secondary" id="call-btn" href="#" style="justify-content:flex-start;">Call us — <span id="call-display-btn"></span></a>
-            <a class="btn btn-secondary" href="mailto:klinedesignstudio@gmail.com" style="justify-content:flex-start;">Email — klinedesignstudio@gmail.com</a>
+            <a class="btn btn-secondary" id="email-btn" href="#" style="justify-content:flex-start;">Email — <span id="email-display"></span></a>
           </div>
 
           <div style="background:var(--warm); border:1px solid var(--line); border-radius:var(--radius); padding:24px;">
@@ -53,21 +53,26 @@
           <h2 style="font-family:var(--display); font-size:36px; margin-bottom:8px; font-weight:600;">Send a message.</h2>
           <p style="color:var(--muted); margin-bottom:20px;">We reply within one business day. For urgent orders, please use WhatsApp.</p>
 
-          <form id="contact-form" novalidate>
+          <!-- POSTs to Formspree; the action attribute is set in JS from
+               KLINE.FORMSPREE_ENDPOINT so the page works without JS too.
+               _subject sets the email subject; _gotcha is a hidden honeypot. -->
+          <form id="contact-form" method="POST" novalidate>
+            <input type="hidden" name="_subject" value="K-LINE MEN — message from contact form">
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px;">
             <div class="field">
               <label for="cf-name">Your name</label>
-              <input id="cf-name" type="text" required autocomplete="name">
+              <input id="cf-name" name="name" type="text" required autocomplete="name">
             </div>
             <div class="field">
               <label for="cf-channel">Best way to reach you</label>
-              <input id="cf-channel" type="text" placeholder="WhatsApp number or email" required>
+              <input id="cf-channel" name="channel" type="text" placeholder="WhatsApp number or email" required>
             </div>
             <div class="field">
               <label for="cf-msg">Message</label>
-              <textarea id="cf-msg" required placeholder="Sizing, an outfit, delivery, anything…"></textarea>
+              <textarea id="cf-msg" name="message" required placeholder="Sizing, an outfit, delivery, anything…"></textarea>
             </div>
-            <button class="btn btn-primary" type="submit">Send via WhatsApp</button>
-            <p style="color:var(--muted); font-size:12px; margin-top:10px;">Submitting opens WhatsApp with your message prefilled — that way you keep a copy of the conversation too.</p>
+            <button class="btn btn-primary" id="cf-submit" type="submit">Send message</button>
+            <p style="color:var(--muted); font-size:12px; margin-top:10px;">We reply within one business day. For urgent orders, message us on WhatsApp instead — fastest reply during opening hours.</p>
           </form>
         </div>
       </div>
@@ -86,7 +91,28 @@
     document.getElementById('call-display-btn').textContent = KLINE.CALL_DISPLAY;
     document.getElementById('call-btn').href = 'tel:+' + KLINE.CALL_RAW;
 
-    document.getElementById('contact-form').addEventListener('submit', e => {
+    // Email button reads address from KLINE config so contact details live in
+    // one file (products.js) — see also the footer email reference there.
+    const emailBtn = document.getElementById('email-btn');
+    emailBtn.href = 'mailto:' + KLINE.EMAIL;
+    document.getElementById('email-display').textContent = KLINE.EMAIL;
+
+    /* ─── Contact form ───
+       POSTs to Formspree (KLINE.FORMSPREE_ENDPOINT). On any failure — network
+       error, non-2xx response, or unconfigured placeholder endpoint — falls
+       back to opening WhatsApp prefilled with the same message so the
+       customer's input is never lost. */
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('cf-submit');
+    const isEndpointConfigured = KLINE.FORMSPREE_ENDPOINT && !/YOUR_FORM_ID/i.test(KLINE.FORMSPREE_ENDPOINT);
+    if (isEndpointConfigured) form.action = KLINE.FORMSPREE_ENDPOINT;
+
+    function fallbackToWhatsApp(name, channel, msg) {
+      const compiled = 'Hello K-LINE MEN,\n\n' + msg + '\n\nName: ' + name + '\nReach me on: ' + channel;
+      window.open(KLINE.whatsappUrl(compiled), '_blank', 'noopener');
+    }
+
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const name = document.getElementById('cf-name').value.trim();
       const channel = document.getElementById('cf-channel').value.trim();
@@ -95,8 +121,32 @@
         SITE.showToast('Please fill in every field');
         return;
       }
-      const compiled = 'Hello K-LINE MEN,\n\n' + msg + '\n\nName: ' + name + '\nReach me on: ' + channel;
-      window.open(KLINE.whatsappUrl(compiled), '_blank', 'noopener');
+
+      // Formspree not yet configured — go straight to WhatsApp.
+      if (!isEndpointConfigured) {
+        fallbackToWhatsApp(name, channel, msg);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+      try {
+        const res = await fetch(KLINE.FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (!res.ok) throw new Error('Formspree returned ' + res.status);
+        form.reset();
+        SITE.showToast('Thanks — we will reply within one business day.');
+      } catch (err) {
+        // Bubble the message to WhatsApp so it isn't lost.
+        SITE.showToast('Network issue — opening WhatsApp instead.');
+        fallbackToWhatsApp(name, channel, msg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send message';
+      }
     });
   </script>
 </body>
