@@ -263,6 +263,35 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 .btn-whatsapp:hover { background: #0e6e63; }
 .btn-block { width: 100%; }
 
+/* Focus styles — :focus-visible only triggers for keyboard users, so mouse
+   clicks stay visually clean while tab navigation gets a clear ring. */
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.pill:focus-visible,
+.size-option:focus-visible,
+.color-option:focus-visible,
+.qty button:focus-visible,
+.wish-btn:focus-visible,
+.remove-btn:focus-visible,
+a.product-link:focus-visible,
+.whatsapp-small:focus-visible,
+.floating-whatsapp:focus-visible {
+  outline: 2px solid var(--bronze-dark);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(166, 120, 69, .25);
+}
+a:not(.product-link):not(.btn):not(.icon-btn):focus-visible {
+  outline: 2px solid var(--bronze-dark);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* ───────── Hero ───────── */
 .hero {
   background:
@@ -457,6 +486,19 @@ section { padding: 80px 0; }
   font-size: 30px;
   line-height: 1;
   font-weight: 600;
+}
+
+/* Stub variant for categories without product photography yet — keeps the
+   rail visible in the grid (clickable through to the shop filter) without
+   showing an empty white box. */
+.category-card-stub {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(166,120,69,.32), transparent 42%),
+    linear-gradient(160deg, var(--ink) 0%, #2a3447 100%);
+}
+.category-card-stub::after { display: none; }
+.category-card-stub .label .count {
+  color: rgba(217, 192, 162, .9);
 }
 
 /* ───────── Outfit edits ───────── */
@@ -1054,6 +1096,189 @@ section { padding: 80px 0; }
   color: rgba(255,255,255,.55);
   font-size: 13px;
   flex-wrap: wrap;
+}
+
+/* ───────── Footer Instagram link ───────── */
+/* Sits under the brand blurb in the first footer column. Pill-style so the
+   handle reads as a clickable badge, not a footer link buried in text. */
+.footer-ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  transition: background .15s ease, border-color .15s ease;
+}
+.footer-ig:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.4);
+}
+.footer-ig svg { color: #d9c0a2; }
+
+/* ───────── Look of the Week ───────── */
+/* A single hero outfit card, mirrors the Monday/Friday IG cadence.
+   Two-column on desktop (image left, copy + product chips right),
+   stacks on mobile. */
+.look-week {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 32px;
+  overflow: hidden;
+  background-image: radial-gradient(circle at 78% 18%, rgba(166,120,69,.32), transparent 38%);
+}
+.look-week-media {
+  position: relative;
+  background: var(--warm);
+  min-height: 460px;
+  overflow: hidden;
+}
+.look-week-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.look-week:hover .look-week-media img { transform: scale(1.04); }
+.look-week-media .lw-badge {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  background: rgba(255,255,255,.94);
+  color: var(--ink);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+}
+.look-week-body {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+.look-week-body h2 {
+  font-family: var(--display);
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: .98;
+  letter-spacing: -.02em;
+  font-weight: 600;
+}
+.look-week-body p { color: rgba(255,255,255,.78); font-size: 16px; }
+.look-week-body .eyebrow { color: #d9c0a2; }
+.look-week-pieces {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.look-week-pieces a {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: background .15s ease;
+}
+.look-week-pieces a:hover { background: rgba(255,255,255,.16); }
+
+/* ───────── Instagram strip ───────── */
+/* 6-tile mini-grid that mirrors an Instagram profile preview.
+   Tiles are clickable, link to the IG profile, and reveal the @handle on
+   hover so customers know where the image came from. */
+.ig-strip-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.ig-strip-head .section-title { max-width: 640px; }
+.ig-strip-handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .04em;
+  border: 1px solid var(--line);
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  transition: border-color .15s ease, background .15s ease;
+}
+.ig-strip-handle:hover { border-color: var(--ink); background: var(--warm); }
+.ig-strip-handle svg { color: var(--bronze-dark); }
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.ig-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--warm);
+  display: block;
+}
+.ig-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.ig-tile:hover img { transform: scale(1.06); }
+.ig-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(17,24,39,.72), rgba(17,24,39,0) 55%);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.ig-tile:hover::after { opacity: 1; }
+.ig-tile .ig-tile-label {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 2;
+}
+.ig-tile:hover .ig-tile-label { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 1080px) {
+  .ig-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .ig-grid { grid-template-columns: repeat(2, 1fr); }
+  .look-week { grid-template-columns: 1fr; border-radius: 24px; }
+  .look-week-media { min-height: 320px; }
+  .look-week-body { padding: 32px 24px; }
 }
 
 /* ───────── Floating WhatsApp ───────── */

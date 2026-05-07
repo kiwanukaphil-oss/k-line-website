@@ -1,0 +1,13 @@
+{
+  "name": "kline-men-site",
+  "version": "0.1.0",
+  "description": "K-LINE MEN — static menswear storefront with WhatsApp checkout. Build scripts only — site is plain HTML/CSS/JS.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize:images": "node scripts/optimize-images.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

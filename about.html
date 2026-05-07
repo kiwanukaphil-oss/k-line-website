@@ -61,8 +61,9 @@
           <h2>Kampala &amp; nationwide.</h2>
         </div>
         <div>
-          <p>Browse, try, and pick up from our showroom in Kampala. If you're outside the city, we deliver across Uganda — confirmed by WhatsApp once you place an order.</p>
+          <p>Browse, try, and pick up from our showroom at <strong style="color:#fff;">Fraine Building, Ntinda, Kampala</strong>. If you're outside the city, we deliver across Uganda — confirmed by WhatsApp once you place an order.</p>
           <p style="margin-top:8px;"><strong style="color:#fff;">WhatsApp:</strong> <a href="javascript:void(0)" id="wa-link" style="color:#d9c0a2; border-bottom: 1px solid;"></a></p>
+          <p><strong style="color:#fff;">Call:</strong> <a id="call-link" style="color:#d9c0a2; border-bottom: 1px solid;"></a></p>
           <p><strong style="color:#fff;">Hours:</strong> Mon–Sat · 9am–7pm</p>
           <a class="btn btn-bronze" href="contact.html" style="margin-top:18px;">Contact us</a>
         </div>
@@ -80,6 +81,10 @@
     link.textContent = KLINE.WHATSAPP_DISPLAY;
     link.href = KLINE.whatsappUrl('Hello K-LINE MEN!');
     link.target = '_blank'; link.rel = 'noopener';
+
+    const callLink = document.getElementById('call-link');
+    callLink.textContent = KLINE.CALL_DISPLAY;
+    callLink.href = 'tel:+' + KLINE.CALL_RAW;
   </script>
 </body>
 </html>

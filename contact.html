@@ -31,14 +31,16 @@
 
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:24px;">
             <a class="btn btn-whatsapp" id="wa-btn" href="#" target="_blank" rel="noopener" style="justify-content:flex-start;"><span class="whatsapp-dot"></span> Message us on WhatsApp</a>
+            <a class="btn btn-secondary" id="call-btn" href="#" style="justify-content:flex-start;">Call us — <span id="call-display-btn"></span></a>
             <a class="btn btn-secondary" href="mailto:hello@k-line-men.com" style="justify-content:flex-start;">Email — hello@k-line-men.com</a>
           </div>
 
           <div style="background:var(--warm); border:1px solid var(--line); border-radius:var(--radius); padding:24px;">
             <h3 style="font-size:17px; margin-bottom:10px;">K-LINE MEN Showroom</h3>
-            <p style="color:var(--muted); margin-bottom:6px;">Kampala, Uganda</p>
+            <p style="color:var(--muted); margin-bottom:6px;">Fraine Building<br>Ntinda, Kampala<br>Uganda</p>
             <p style="color:var(--muted); margin-bottom:6px;">Open Mon–Sat · 9am–7pm</p>
-            <p style="color:var(--muted);">WhatsApp: <span id="wa-display"></span></p>
+            <p style="color:var(--muted); margin-bottom:6px;">WhatsApp: <span id="wa-display"></span></p>
+            <p style="color:var(--muted);">Call: <span id="call-display"></span></p>
           </div>
         </div>
 
@@ -75,6 +77,9 @@
     SITE.mount('contact');
     document.getElementById('wa-btn').href = KLINE.whatsappUrl('Hello K-LINE MEN, I have a question.');
     document.getElementById('wa-display').textContent = KLINE.WHATSAPP_DISPLAY;
+    document.getElementById('call-display').textContent = KLINE.CALL_DISPLAY;
+    document.getElementById('call-display-btn').textContent = KLINE.CALL_DISPLAY;
+    document.getElementById('call-btn').href = 'tel:+' + KLINE.CALL_RAW;
 
     document.getElementById('contact-form').addEventListener('submit', e => {
       e.preventDefault();

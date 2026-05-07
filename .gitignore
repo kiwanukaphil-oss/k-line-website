@@ -2,6 +2,9 @@
 # Kept locally in OneDrive as a backup; not needed in the deployed repo.
 Product images/
 
+# Instagram reference screenshots — used locally for brand voice reference, not for deployment.
+Instagram/
+
 # OS noise
 .DS_Store
 Thumbs.db

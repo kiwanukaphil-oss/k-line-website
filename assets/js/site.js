@@ -25,7 +25,9 @@
     truck:  '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
     refresh:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
     chat:   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-    card:   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>'
+    card:   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    phone:  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    instagram: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'
   };
 
   /* ─────────── Storage helpers ─────────── */
@@ -149,17 +151,27 @@
            'My name: \nDelivery location: \n' +
            '(Sent from K-LINE MEN.com)';
   }
+  // Open a wa.me link with a graceful fallback for in-app browsers (Instagram,
+  // Facebook) where window.open may be blocked or silently no-op. If the popup
+  // can't be created we navigate the current tab instead — better to leave the
+  // site than to swallow the conversion.
+  function openWhatsApp(url) {
+    const win = window.open(url, '_blank', 'noopener');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = url;
+    }
+  }
   function checkoutOnWhatsApp() {
     const msg = buildCheckoutMessage();
     if (!msg) { showToast('Your bag is empty'); return; }
-    window.open(window.KLINE.whatsappUrl(msg), '_blank', 'noopener');
+    openWhatsApp(window.KLINE.whatsappUrl(msg));
   }
   function askAboutProduct(product, size) {
     const msg = 'Hello K-LINE MEN, I\'m interested in:\n\n' +
                 product.name + (size ? ' (size ' + size + ')' : '') + '\n' +
                 window.KLINE.formatUGX(product.price) + '\n\n' +
                 'Could you confirm availability and delivery to me?';
-    window.open(window.KLINE.whatsappUrl(msg), '_blank', 'noopener');
+    openWhatsApp(window.KLINE.whatsappUrl(msg));
   }
 
   /* ─────────── Header / footer rendering ─────────── */
@@ -183,7 +195,7 @@
     const wishHidden = wishCountValue ? '' : ' hidden';
 
     return ''
-      + '<div class="announcement">New styles weekly · Delivery available · Order easily on WhatsApp · ' + window.KLINE.WHATSAPP_DISPLAY + '</div>'
+      + '<div class="announcement">New styles weekly · See outfits on Instagram <a href="' + window.KLINE.INSTAGRAM_URL + '" target="_blank" rel="noopener" style="color:inherit; border-bottom:1px solid currentColor;">' + window.KLINE.INSTAGRAM_HANDLE + '</a> · Order on WhatsApp ' + window.KLINE.WHATSAPP_DISPLAY + '</div>'
       + '<header class="site-header">'
       +   '<div class="container nav">'
       +     '<a class="brand" href="index.html"><strong>K-LINE MEN</strong><span>Real Men Real Style</span></a>'
@@ -193,11 +205,11 @@
       +       '<a class="icon-btn" href="wishlist.html" aria-label="Wishlist" id="hdr-wish">' + ICONS.heart + '<span class="badge-count" id="hdr-wish-count"' + wishHidden + '>' + wishCountValue + '</span></a>'
       +       '<a class="icon-btn" href="cart.html" aria-label="Bag" id="hdr-cart">' + ICONS.bag + '<span class="badge-count" id="hdr-cart-count"' + cartHidden + '>' + cartCountValue + '</span></a>'
       +       '<a class="whatsapp-small" href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN, I have a question.') + '" target="_blank" rel="noopener"><span class="whatsapp-dot"></span> WhatsApp</a>'
-      +       '<button class="icon-btn menu-btn" id="hdr-menu" aria-label="Open menu">' + ICONS.menu + '</button>'
+      +       '<button class="icon-btn menu-btn" id="hdr-menu" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">' + ICONS.menu + '</button>'
       +     '</div>'
       +   '</div>'
       + '</header>'
-      + '<div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">'
+      + '<div class="mobile-drawer" id="mobile-drawer" aria-hidden="true" role="dialog" aria-label="Site navigation">'
       +   '<div class="panel">'
       +     '<button class="icon-btn close" id="hdr-menu-close" aria-label="Close menu">' + ICONS.close + '</button>'
       +     navHTML.replace(/class="is-active"/g, '')
@@ -219,12 +231,16 @@
       +       '<div class="footer-brand">'
       +         '<img src="Logo.png" alt="K-LINE MEN" class="footer-logo">'
       +         '<p>Real Men Real Style. Modern menswear for work, weekends, and special occasions — based in Kampala, delivered across Uganda.</p>'
+      +         '<a class="footer-ig" href="' + window.KLINE.INSTAGRAM_URL + '" target="_blank" rel="noopener" aria-label="K-LINE MEN on Instagram">'
+      +           ICONS.instagram + '<span>' + window.KLINE.INSTAGRAM_HANDLE + ' — outfit ideas daily</span>'
+      +         '</a>'
       +       '</div>'
       +       '<div class="footer-col"><h3>Shop</h3>' + cats + '<a href="shop.html">All products</a></div>'
       +       '<div class="footer-col"><h3>Help</h3><a href="faq.html">FAQs</a><a href="contact.html">Contact</a><a href="about.html">About</a><a href="faq.html#delivery">Delivery & returns</a></div>'
-      +       '<div class="footer-col"><h3>Contact</h3>'
+      +       '<div class="footer-col"><h3>Visit</h3>'
       +         '<p>WhatsApp: <a href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN!') + '" target="_blank" rel="noopener">' + window.KLINE.WHATSAPP_DISPLAY + '</a></p>'
-      +         '<p>Kampala, Uganda</p>'
+      +         '<p>Call: <a href="tel:+' + window.KLINE.CALL_RAW + '">' + window.KLINE.CALL_DISPLAY + '</a></p>'
+      +         '<p>Fraine Building<br>Ntinda, Kampala<br>Uganda</p>'
       +         '<p>Open Mon–Sat · 9am–7pm</p>'
       +       '</div>'
       +     '</div>'
@@ -294,16 +310,36 @@
     });
   }
   function wireMobileDrawer() {
+    // The drawer is a small dialog. We track aria-expanded on the toggle,
+    // aria-hidden on the drawer, return focus to the toggle on close, and
+    // close on Escape. This is the minimum needed for keyboard/screen-reader
+    // users to use the menu without getting trapped.
     const drawer = document.getElementById('mobile-drawer');
     const openBtn = document.getElementById('hdr-menu');
     const closeBtn = document.getElementById('hdr-menu-close');
     if (!drawer || !openBtn) return;
-    function open() { drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); }
-    function close(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
+
+    function open() {
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      openBtn.setAttribute('aria-expanded', 'true');
+      // Defer focus until the panel has actually transitioned in.
+      setTimeout(() => { if (closeBtn) closeBtn.focus(); }, 50);
+    }
+    function close() {
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('aria-expanded', 'false');
+      openBtn.focus();
+    }
+
     openBtn.addEventListener('click', open);
     if (closeBtn) closeBtn.addEventListener('click', close);
     drawer.addEventListener('click', e => { if (e.target === drawer) close(); });
     drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) close();
+    });
   }
   function refreshHeaderCounts() {
     const cartCountEl = document.getElementById('hdr-cart-count');

@@ -66,8 +66,8 @@
         <div class="section-head">
           <div class="section-title">
             <div class="eyebrow">Shop by category</div>
-            <h2>Find what you need quickly.</h2>
-            <p>Simple shopping paths for the most common men's wardrobe needs — from work shirts to shoes and accessories.</p>
+            <h2>Find your piece. Fast.</h2>
+            <p>Shirts to shoes, polos to suits — straight to the rail you came for.</p>
           </div>
           <a class="btn btn-secondary" href="shop.html">View all products</a>
         </div>
@@ -81,8 +81,8 @@
         <div class="section-head">
           <div class="section-title">
             <div class="eyebrow">Style made simple</div>
-            <h2>Shop by how men actually dress.</h2>
-            <p>Browse complete outfit ideas that match real life — work, weekend, and special occasions.</p>
+            <h2>Don't shop pieces. Shop outfits.</h2>
+            <p>Three edits for the three places men actually wear clothes — work, weekend, and the room you want to be remembered in.</p>
           </div>
         </div>
 
@@ -128,8 +128,8 @@
         <div class="section-head">
           <div class="section-title">
             <div class="eyebrow">Fresh in store</div>
-            <h2>New arrivals.</h2>
-            <p>Just landed — pieces we expect to move fast.</p>
+            <h2>Just landed.</h2>
+            <p>New on the rail this week — usually gone by next.</p>
           </div>
           <a class="btn btn-secondary" href="shop.html?badge=new">Shop new</a>
         </div>
@@ -143,8 +143,8 @@
         <div class="section-head">
           <div class="section-title">
             <div class="eyebrow">Customer favourites</div>
-            <h2>Best sellers.</h2>
-            <p>The pieces our customers come back for — proven across hundreds of wardrobes.</p>
+            <h2>What real men keep buying.</h2>
+            <p>Pieces that earned their place. Tested in hundreds of Kampala wardrobes.</p>
           </div>
           <a class="btn btn-secondary" href="shop.html?badge=bestseller">Shop best sellers</a>
         </div>
@@ -152,8 +152,33 @@
       </div>
     </section>
 
-    <!-- ───── Signature pieces ───── -->
+    <!-- ───── Look of the Week ───── -->
+    <!-- Mirrors the Monday/Friday outfit cadence on @k_linemen. The image and
+         pieces are wired up from the catalog at the bottom of the page so a
+         shopkeeper only needs to update LOOK_OF_WEEK_IDS to swap the look. -->
     <section>
+      <div class="container">
+        <article class="look-week" id="look-week">
+          <div class="look-week-media">
+            <span class="lw-badge">Look of the week</span>
+            <img id="lw-image" src="" alt="">
+          </div>
+          <div class="look-week-body">
+            <div class="eyebrow">Friday smart</div>
+            <h2 id="lw-title">The end-of-week edit.</h2>
+            <p id="lw-copy">A clean polo, a tailored chino, leather on the foot, time on the wrist. Drinks-after-work confidence without trying.</p>
+            <div class="look-week-pieces" id="lw-pieces"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;">
+              <a class="btn btn-bronze" id="lw-shop" href="shop.html?occasion=smart-casual">Shop the look</a>
+              <a class="btn btn-outline" href="https://www.instagram.com/k_linemen/" target="_blank" rel="noopener">See more on Instagram</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───── Signature pieces ───── -->
+    <section class="warm-section">
       <div class="container">
         <div class="section-head">
           <div class="section-title">
@@ -163,6 +188,27 @@
           </div>
         </div>
         <div class="product-grid" id="grid-sig"></div>
+      </div>
+    </section>
+
+    <!-- ───── Instagram strip ───── -->
+    <!-- Tile images live in /assets/images/instagram/. Until they're swapped
+         in, we render a fallback grid using catalog imagery so the layout is
+         never empty. -->
+    <section>
+      <div class="container">
+        <div class="ig-strip-head">
+          <div class="section-title">
+            <div class="eyebrow">From our Instagram</div>
+            <h2>See how real men wear it.</h2>
+            <p>Daily outfit ideas, weekly drops, and Monday-to-Friday styling cues.</p>
+          </div>
+          <a class="ig-strip-handle" href="https://www.instagram.com/k_linemen/" target="_blank" rel="noopener" id="ig-handle-btn">
+            <span id="ig-handle-icon"></span>
+            <span>@k_linemen — Follow</span>
+          </a>
+        </div>
+        <div class="ig-grid" id="ig-grid"></div>
       </div>
     </section>
 
@@ -205,7 +251,10 @@
   <script>
     SITE.mount('home');
 
-    // Categories: pick a representative image per category
+    // Categories: pick a representative image per category. Categories without
+    // an entry here render as "Coming soon" stub cards so newly-added rails
+    // (e.g. sandals, caps, gym) stay visible on the homepage before product
+    // photography is shot.
     const categoryImages = {
       shirts: 'assets/images/shirts/shirts-004.png',
       polos: 'assets/images/polos/polos-001.png',
@@ -218,17 +267,32 @@
       coats: 'assets/images/coats/coats-001.png',
       jackets: 'assets/images/jackets/jackets-002.png',
       shoes: 'assets/images/shoes/shoes-001.png',
+      sandals: 'assets/images/sandals/sandals-001.png',
+      caps: 'assets/images/caps/caps-001.png',
+      gym: 'assets/images/gym/gym-014.png',
+      sunglasses: 'assets/images/sunglasses/sunglasses-002.png',
       watches: 'assets/images/watches/watches-001.png',
       accessories: 'assets/images/accessories/accessories-002.png'
     };
-    const showOnHome = ['shirts','suits','shoes','blazers','jeans','watches','jackets','accessories'];
+    const showOnHome = ['shirts','suits','blazers','jeans','jackets','shoes','sandals','sunglasses','caps','gym','watches','accessories'];
     document.getElementById('cat-grid').innerHTML = showOnHome.map(slug => {
       const cat = KLINE_CATEGORIES.find(c => c.slug === slug);
+      if (!cat) return '';
       const count = KLINE.byCategory(slug).length;
+      const img = categoryImages[slug];
+      // Real photo card when we have both an image and stocked products;
+      // otherwise a "Coming soon" stub (still clickable through to the shop
+      // filter) so the category surfaces in the grid.
+      if (img && count > 0) {
+        return ''
+          + '<a class="category-card" href="shop.html?cat=' + slug + '">'
+          +   '<img loading="lazy" src="' + img + '" alt="' + cat.label + '">'
+          +   '<div class="label"><span class="count">' + count + ' pieces</span><h3>' + cat.label + '</h3></div>'
+          + '</a>';
+      }
       return ''
-        + '<a class="category-card" href="shop.html?cat=' + slug + '">'
-        +   '<img loading="lazy" src="' + categoryImages[slug] + '" alt="' + cat.label + '">'
-        +   '<div class="label"><span class="count">' + count + ' pieces</span><h3>' + cat.label + '</h3></div>'
+        + '<a class="category-card category-card-stub" href="shop.html?cat=' + slug + '">'
+        +   '<div class="label"><span class="count">New category — coming soon</span><h3>' + cat.label + '</h3></div>'
         + '</a>';
     }).join('');
 
@@ -249,6 +313,39 @@
     document.getElementById('icon-refresh').innerHTML = SITE.icons.refresh;
     document.getElementById('icon-chat').innerHTML = SITE.icons.chat;
     document.getElementById('icon-card').innerHTML = SITE.icons.card;
+
+    /* ─── Look of the Week ───
+       Update LOOK_OF_WEEK_IDS to swap the featured outfit. The first id is the
+       hero image; the rest become clickable chips beneath the copy. */
+    const LOOK_OF_WEEK_IDS = ['polos-001', 'khakis-002', 'shoes-003', 'watches-001'];
+    const lookPieces = LOOK_OF_WEEK_IDS.map(id => KLINE.byId(id)).filter(Boolean);
+    if (lookPieces.length) {
+      const hero = lookPieces[0];
+      document.getElementById('lw-image').src = hero.image;
+      document.getElementById('lw-image').alt = hero.name;
+      document.getElementById('lw-pieces').innerHTML = lookPieces.map(p =>
+        '<a href="product.html?id=' + p.id + '">' + p.name + '</a>'
+      ).join('');
+    }
+
+    /* ─── Instagram strip ───
+       Drop 6 actual IG post images into assets/images/instagram/ (named ig-1
+       through ig-6) and the strip will pick them up. Until then we fall back
+       to curated catalog imagery so the layout is never empty. */
+    const IG_TILES = [
+      { src: 'assets/images/instagram/ig-1.jpg', fallback: 'assets/images/suits/suits-001.png',     caption: 'Royal navy 2-piece' },
+      { src: 'assets/images/instagram/ig-2.jpg', fallback: 'assets/images/polos/polos-001.png',     caption: 'Signature polo Friday' },
+      { src: 'assets/images/instagram/ig-3.jpg', fallback: 'assets/images/shoes/shoes-001.png',     caption: 'Walnut Oxford' },
+      { src: 'assets/images/instagram/ig-4.jpg', fallback: 'assets/images/jackets/jackets-002.png', caption: 'Saturday in leather' },
+      { src: 'assets/images/instagram/ig-5.jpg', fallback: 'assets/images/watches/watches-001.png', caption: 'Two-tone on wrist' },
+      { src: 'assets/images/instagram/ig-6.jpg', fallback: 'assets/images/blazers/blazers-001.png', caption: 'Hopsack blazer fit' }
+    ];
+    document.getElementById('ig-grid').innerHTML = IG_TILES.map(tile => ''
+      + '<a class="ig-tile" href="https://www.instagram.com/k_linemen/" target="_blank" rel="noopener" aria-label="' + tile.caption + ' on Instagram">'
+      +   '<img loading="lazy" src="' + tile.src + '" onerror="this.onerror=null;this.src=\'' + tile.fallback + '\';" alt="' + tile.caption + '">'
+      +   '<span class="ig-tile-label">@k_linemen · ' + tile.caption + '</span>'
+      + '</a>').join('');
+    document.getElementById('ig-handle-icon').innerHTML = SITE.icons.instagram;
   </script>
 </body>
 </html>
