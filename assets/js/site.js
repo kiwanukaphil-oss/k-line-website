@@ -391,6 +391,7 @@
   }
 
   function mount(activePage) {
+    injectSkipLink();
     const headerSlot = document.getElementById('site-header');
     const footerSlot = document.getElementById('site-footer');
     if (headerSlot) headerSlot.outerHTML = renderHeader(activePage);
@@ -398,6 +399,26 @@
     wireMobileDrawer();
     wireGlobalDelegates();
     injectOrganizationJSONLD();
+    ensureMainLandmarkId();
+  }
+
+  // Skip-to-content link is the first focusable element on the page so
+  // keyboard / screen-reader users can jump past the header into <main>.
+  // Hidden visually until focused (.skip-link in styles.css).
+  function injectSkipLink() {
+    if (document.querySelector('.skip-link')) return;
+    const link = document.createElement('a');
+    link.className = 'skip-link';
+    link.href = '#main';
+    link.textContent = 'Skip to content';
+    document.body.insertBefore(link, document.body.firstChild);
+  }
+
+  // Targets the skip-link anchor. If a page didn't manually mark its <main>
+  // with id="main", we attach it here so every page is reachable.
+  function ensureMainLandmarkId() {
+    const main = document.querySelector('main');
+    if (main && !main.id) main.id = 'main';
   }
 
   /* ─────────── Organization / LocalBusiness JSON-LD ───────────

@@ -1,0 +1,56 @@
+# K-LINE MEN — Netlify cache + security headers
+# Docs: https://docs.netlify.com/routing/headers/
+#
+# Strategy: aggressive caching for content-stable assets (images, favicons,
+# the OG card), short cache for HTML so site updates show up promptly. CSS
+# and JS get a moderate window since they don't have content-hashed names yet
+# — when filenames change (e.g. styles.v2.css), bump the cache window.
+
+# All paths — basic security headers
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Product images and category WebP variants — change rarely, cache one month
+/assets/images/*
+  Cache-Control: public, max-age=2592000
+
+# CSS / JS — moderate cache; updates trickle out within a day
+/assets/css/*
+  Cache-Control: public, max-age=86400, must-revalidate
+/assets/js/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# Brand assets — favicons + footer logo + manifest
+/favicon-16.png
+  Cache-Control: public, max-age=2592000
+/favicon-32.png
+  Cache-Control: public, max-age=2592000
+/apple-touch-icon.png
+  Cache-Control: public, max-age=2592000
+/icon-192.png
+  Cache-Control: public, max-age=2592000
+/icon-512.png
+  Cache-Control: public, max-age=2592000
+/Logo-footer.webp
+  Cache-Control: public, max-age=2592000
+/Logo.png
+  Cache-Control: public, max-age=2592000
+/og-card.jpg
+  Cache-Control: public, max-age=86400
+/site.webmanifest
+  Cache-Control: public, max-age=86400
+
+# HTML pages — short cache so prerendered PDPs and home updates show fast
+/*.html
+  Cache-Control: public, max-age=3600, must-revalidate
+/product/*.html
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Sitemap + robots — refresh frequently
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+/robots.txt
+  Cache-Control: public, max-age=86400

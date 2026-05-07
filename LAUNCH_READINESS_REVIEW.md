@@ -82,7 +82,7 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 - ~~**No JSON-LD / schema.org.**~~ ✅ **Resolved 2026-05-07** — Organization/ClothingStore JSON-LD auto-injected on every page via `injectOrganizationJSONLD()` in [site.js](assets/js/site.js) (called from `mount()`); Product + Offer + BreadcrumbList injected on PDP both as static markup at build time (in pre-rendered files) and as a JS fallback on the dynamic `/product.html?id=X` URL. Product LD includes `sku`, `brand`, `category`, `color`, `priceCurrency`, `price`, `availability`, and a seller `Organization`.
 - ~~**Sitemap dates are baked-in.**~~ ✅ **Resolved 2026-05-07** — replaced PowerShell snippet with [scripts/build-sitemap.mjs](scripts/build-sitemap.mjs). Run `npm run build:sitemap` to rebuild — emits 213 URLs (7 static + 17 category + 189 product) with today's `<lastmod>` and per-URL priority. Now part of `npm run build:all`.
 - ~~**Most product pages share a generic title until JS runs.**~~ ✅ **Resolved 2026-05-07** — [scripts/prerender-products.mjs](scripts/prerender-products.mjs) emits one HTML file per product at `/product/{id}.html` with pre-baked `<title>`, `<meta description>`, `<link rel="canonical">`, Open Graph, Twitter card, and JSON-LD. The dynamic `/product.html?id=X` URL still works (canonical points at the clean URL). Internal product links across the site now point at the clean URL form. `<base href="../">` in pre-rendered files keeps relative paths resolving correctly.
-- **No canonical tags on shop / category pages.** [shop.html](shop.html) doesn't emit `<link rel="canonical">`. With URL-state filters (`?cat=blazers`), Google may index every filtered permutation as duplicate content. Add `<link rel="canonical" href="https://k-line-men.com/shop.html">` to the shop page (or canonical with category param when one is selected). *(Still open — small task, batch with item #5 below.)*
+- ~~**No canonical tags on shop / category pages.**~~ ✅ **Resolved 2026-05-07** — every static root-level page now ships `<link rel="canonical">` in its head. Shop canonical points at the unfiltered URL (Google indexes one shop page, not every `?cat=…` permutation). Cart and wishlist additionally ship `<meta name="robots" content="noindex">` and are excluded from the sitemap because they're per-device shopping state.
 - ~~**OG image is a single suit photo.**~~ ✅ **Resolved 2026-05-07** — [scripts/generate-og-card.mjs](scripts/generate-og-card.mjs) composites the navy-suit hero with a left-side dark gradient panel and SVG-rendered brand text/tagline at 1200×630. Output `og-card.jpg` is 44.9 KB. Run `npm run generate:og` (also part of `build:all`). [index.html:14](index.html#L14) now points at the absolute URL `https://k-line-men.com/og-card.jpg` plus `og:image:width/height` and `og:url`. PDPs keep the product photo as `og:image` (set at prerender time) so social previews show the actual product, not the brand card.
 
 ---
@@ -233,7 +233,14 @@ Currently render-blocking. Either self-host (Manrope + Cormorant Garamond → Go
 [site.js](assets/js/site.js) is 22 KB and inlined everywhere; [products.js](assets/js/products.js) is 76 KB (mostly data). Acceptable for now, but `products.js` will balloon as you add stock per size. Long-term, split product data into per-category JSON files lazy-loaded by the shop page.
 
 ### F6. Cache headers
-After deploy, set `Cache-Control: public, max-age=31536000, immutable` on `/assets/images/*` and `/assets/css/*` and `/assets/js/*`. On Netlify, drop a `_headers` file.
+✅ **Resolved 2026-05-07** — [_headers](_headers) at repo root configures Netlify with:
+- 30-day cache for `/assets/images/*`, favicons, footer logo
+- 1-day cache for CSS/JS (`must-revalidate` so deploys roll out within a day)
+- 1-day cache for `og-card.jpg`, `site.webmanifest`
+- 1-hour cache for HTML and pre-rendered `/product/*.html`
+- Security headers on every path: `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+
+Doesn't use `immutable` because filenames aren't content-hashed. Companion [_redirects](_redirects) maps old `/product.html?id=X` URLs → `/product/X.html` with 301 for clean SEO migration.
 
 ### F7. Service worker (post-launch)
 A minimal SW that pre-caches the homepage, shop, and the product images for the front-page grid would make a returning visit feel instant. Don't ship before launch — flag for v1.1.
@@ -304,15 +311,10 @@ The toast ([site.js:121-132](assets/js/site.js#L121-L132)) sets `role="status"` 
 [site.js:340-342](assets/js/site.js#L340-L342) handles Escape, but doesn't implement a focus trap inside the drawer. Tab from inside the drawer escapes to the (visible-but-disabled) page behind. Add a focus-trap (~15-line helper).
 
 ### H7. Skip link
-No skip-to-content link. Add `<a href="#main" class="sr-only">Skip to content</a>` as the first child of `<body>`, and `<main id="main">`.
+✅ **Resolved 2026-05-07** — `injectSkipLink()` in [site.js](assets/js/site.js) inserts the first focusable element on every page (`<a class="skip-link" href="#main">Skip to content</a>`). `ensureMainLandmarkId()` in the same file adds `id="main"` to every page's `<main>` so the link target always resolves. Hidden visually until focused; `:focus` slides it onto the canvas with the standard bronze focus ring.
 
 ### H8. Reduced motion
-Site uses `transition` and `transform: scale` everywhere. Honor `prefers-reduced-motion`:
-```css
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-```
+✅ **Resolved 2026-05-07** — `prefers-reduced-motion: reduce` rule added at [styles.css:88-97](assets/css/styles.css#L88-L97) — strips animation/transition durations and scroll-behavior across the whole document for users who request reduced motion at OS level.
 
 ### H9. Image alts on decorative images
 [about.html:35](about.html#L35) — `<img src="...suits-001.png" alt="">` is correct (decorative). Keep that.
@@ -341,7 +343,7 @@ Site uses `transition` and `transform: scale` everywhere. Honor `prefers-reduced
 13. **Real second image + fabric/care content for the top 10 products** (the ones in hero, signature, and bestsellers). [C4] — the rest can roll out post-launch.
 14. ~~**Fix nested `<button>` inside `<a>` on product cards.**~~ ✅ **Done 2026-05-07** — `.product-actions` is now a sibling of `.product-link` inside the `.product-card` article.
 15. ~~**Update OG image**~~ ✅ **Done 2026-05-07** — `og-card.jpg` at 44.9 KB (target was <300 KB). See C7.
-16. **Set proper Cache-Control headers** at the CDN. [F6]
+16. ~~**Set proper Cache-Control headers** at the CDN.~~ ✅ **Done 2026-05-07** — Netlify [_headers](_headers) + [_redirects](_redirects) at repo root.
 
 ### Should fix soon after launch (weeks 3–6)
 
@@ -353,12 +355,12 @@ Site uses `transition` and `transform: scale` everywhere. Honor `prefers-reduced
 22. Add `BreadcrumbList` JSON-LD on PDP. [G1]
 23. Add canonical tags everywhere. [G3]
 24. Wire stock per size into products.js so the WhatsApp handoff doesn't expose surprises. [C4]
-25. Implement focus-trap in mobile drawer + skip link. [H6, H7]
-26. `prefers-reduced-motion` support. [H8]
+25. Implement focus-trap in mobile drawer. ~~+ skip link~~ ✅ skip link done 2026-05-07; focus-trap still open. [H6, H7]
+26. ~~`prefers-reduced-motion` support.~~ ✅ Done 2026-05-07. [H8]
 27. Remove [preview (2).html](preview%20(2).html), [WEBSITE_REVIEW.md](WEBSITE_REVIEW.md), and the [Product images/](Product%20images/) folder. [E8]
-28. Cart: "saved on this device" copy. [C6]
+28. ~~Cart: "saved on this device" copy.~~ ✅ Done 2026-05-07 — line added beneath the WhatsApp checkout block. Also collapsed the duplicate "Items subtotal" / "Subtotal (excl. delivery)" rows into a single "Total + delivery" line. [C6]
 29. Cart: minimum-order or delivery-fee preview. [C6]
-30. Header: drop "Real Men Real Style" subtitle on mobile; remove the dead search icon link or wire it to focus the search field. [D1]
+30. Header: ~~drop "Real Men Real Style" subtitle on mobile~~ ✅ done 2026-05-07; remove the dead search icon link or wire it to focus the search field — *still open, needs design pick*. [D1]
 31. Submit sitemap to Google Search Console + claim Google Business Profile + Bing Places. [G7]
 
 ### Nice to have later (months 2–3)

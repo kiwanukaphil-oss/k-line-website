@@ -1,0 +1,9 @@
+# K-LINE MEN — Netlify redirect rules
+# Docs: https://docs.netlify.com/routing/redirects/
+
+# Old PDP URL form (?id=…) → clean pre-rendered URL.
+# Search-engine friendly 301 so any indexed query-string URLs migrate cleanly.
+/product.html  /product/:id  301  id=:id
+
+# Trailing-slash variant → canonical .html file
+/product/:id/  /product/:id.html  301

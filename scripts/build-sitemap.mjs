@@ -15,14 +15,15 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE_URL = 'https://k-line-men.com';
 const OUT_PATH = path.join(ROOT, 'sitemap.xml');
 
+// Cart and wishlist are intentionally excluded — both ship `<meta name="robots"
+// content="noindex">` because they're per-device shopping state, not crawlable
+// content. Including them in the sitemap would contradict the noindex hint.
 const STATIC_PAGES = [
   { path: '/',              priority: '1.0' },
   { path: '/shop.html',     priority: '0.9' },
   { path: '/about.html',    priority: '0.6' },
   { path: '/contact.html',  priority: '0.6' },
   { path: '/faq.html',      priority: '0.5' },
-  { path: '/cart.html',     priority: '0.3' },
-  { path: '/wishlist.html', priority: '0.3' },
   { path: '/privacy.html',  priority: '0.3' },
   { path: '/terms.html',    priority: '0.3' }
 ];
