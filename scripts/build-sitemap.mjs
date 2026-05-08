@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SITE_URL = 'https://k-line-men.com';
+const SITE_URL = 'https://klinemen.ug';
 const OUT_PATH = path.join(ROOT, 'sitemap.xml');
 
 // Cart and wishlist are intentionally excluded — both ship `<meta name="robots"

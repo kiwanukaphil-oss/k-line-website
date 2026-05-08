@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://k-line-men.com/sitemap.xml
+Sitemap: https://klinemen.ug/sitemap.xml

@@ -38,7 +38,7 @@ The site is **pure HTML, CSS, and vanilla JS** — no build step, no dependencie
 1. Drag the project folder onto <https://app.netlify.com/drop>.
 2. Once it deploys, go to **Site settings → Domain management** and either:
    - Use the free `*.netlify.app` URL Netlify gives you, or
-   - Connect a custom domain (e.g. `K-LINE MEN.com`).
+   - Connect a custom domain (e.g. `klinemen.ug`).
 3. SSL is automatic.
 
 ### Option 2 — Vercel
@@ -104,7 +104,7 @@ WHATSAPP_RAW:     '256777466979'
 After adding or removing products, regenerate the sitemap:
 
 ```powershell
-$site = "https://K-LINE MEN.com"   # change to your domain
+$site = "https://klinemen.ug"   # change to your domain
 $today = Get-Date -Format "yyyy-MM-dd"
 $static = @("","shop.html","about.html","contact.html","faq.html","cart.html","wishlist.html")
 $cats = @("shirts","polos","trousers","khakis","jeans","sweaters","blazers","suits","coats","jackets","shoes","watches","accessories")
@@ -123,8 +123,8 @@ $sb.ToString() | Set-Content -Path .\sitemap.xml -Encoding utf8
 
 ## What you may want to revisit before going live
 
-- **Domain.** Update `https://K-LINE MEN.com` references in `robots.txt` and `sitemap.xml` to your real domain.
-- **Email address.** [`contact.html`](contact.html) uses a placeholder `hello@K-LINE MEN.com` — change to a real inbox or remove the email button.
+- **Domain.** Update `https://klinemen.ug` references in `robots.txt` and `sitemap.xml` to your real domain.
+- **Email address.** [`contact.html`](contact.html) uses a placeholder `hello@klinemen.ug` — change to a real inbox or remove the email button.
 - **Pricing.** Per-category placeholder UGX values are in `products.js` — replace with real prices when finalised.
 - **Social links / handles.** None are hard-coded yet. Add Instagram/TikTok/Facebook to the footer in [`assets/js/site.js`](assets/js/site.js) (`renderFooter`).
 - **Favicon.** Currently uses the wallet image. Replace with a dedicated `favicon.ico` or branded PNG.

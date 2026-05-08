@@ -19,7 +19,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TEMPLATE_PATH = path.join(ROOT, 'product.html');
 const PRODUCTS_JS_PATH = path.join(ROOT, 'assets', 'js', 'products.js');
 const OUT_DIR = path.join(ROOT, 'product');
-const SITE_URL = 'https://k-line-men.com';
+const SITE_URL = 'https://klinemen.ug';
 
 // Products.js is a browser script that assigns to `window` globals. We run it
 // in a Function-scoped sandbox with a fake `window` to extract the catalog

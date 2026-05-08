@@ -180,7 +180,7 @@
            lines + '\n\n' +
            'Total: ' + total + '\n\n' +
            'My name: \nDelivery location: \n' +
-           '(Sent from K-LINE MEN.com)';
+           '(Sent from klinemen.ug)';
   }
   // Open a wa.me link with a graceful fallback for in-app browsers (Instagram,
   // Facebook) where window.open may be blocked or silently no-op. If the popup
@@ -453,9 +453,9 @@
       '@type': 'ClothingStore',
       'name': 'K-LINE MEN',
       'description': 'Premium menswear in Kampala — shirts, suits, blazers, shoes, watches and accessories. Order on WhatsApp, delivered across Uganda.',
-      'url': 'https://k-line-men.com/',
-      'logo': 'https://k-line-men.com/icon-512.png',
-      'image': 'https://k-line-men.com/apple-touch-icon.png',
+      'url': 'https://klinemen.ug/',
+      'logo': 'https://klinemen.ug/icon-512.png',
+      'image': 'https://klinemen.ug/apple-touch-icon.png',
       'telephone': '+' + window.KLINE.WHATSAPP_RAW,
       'email': window.KLINE.EMAIL,
       'priceRange': 'UGX 35,000 – UGX 950,000',
@@ -489,8 +489,8 @@
      injection so they're still indexable. */
   function injectProductJSONLD(product) {
     if (!product || document.getElementById('jsonld-product')) return;
-    const productUrl = 'https://k-line-men.com/product/' + product.id + '.html';
-    const imageUrl = 'https://k-line-men.com/' + product.image;
+    const productUrl = 'https://klinemen.ug/product/' + product.id + '.html';
+    const imageUrl = 'https://klinemen.ug/' + product.image;
     const productData = {
       '@context': 'https://schema.org',
       '@type': 'Product',
@@ -522,9 +522,9 @@
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       'itemListElement': [
-        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://k-line-men.com/' },
-        { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': 'https://k-line-men.com/shop' },
-        { '@type': 'ListItem', 'position': 3, 'name': categoryLabel(product.category), 'item': 'https://k-line-men.com/shop?cat=' + product.category },
+        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://klinemen.ug/' },
+        { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': 'https://klinemen.ug/shop' },
+        { '@type': 'ListItem', 'position': 3, 'name': categoryLabel(product.category), 'item': 'https://klinemen.ug/shop?cat=' + product.category },
         { '@type': 'ListItem', 'position': 4, 'name': product.name, 'item': productUrl }
       ]
     };

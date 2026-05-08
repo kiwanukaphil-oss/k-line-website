@@ -54,7 +54,7 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 ### C2. Conflicting / placeholder contact details
 - ~~**Call number disagreement.**~~ ✅ **Resolved 2026-05-07** — correct call line is `+256 704 667 111`; transposition fixed in [products.js:276-277](assets/js/products.js#L276-L277).
 - ~~**Email looks placeholder.**~~ ✅ **Resolved 2026-05-08** — set to `klinedesignltd@gmail.com` on the `KLINE.EMAIL` constant in [products.js](assets/js/products.js); contact page reads it dynamically, privacy + terms hardcoded copies updated. (`klinedesignstudio@gmail.com` was an earlier wrong assumption — that's a separate sister business; K-LINE MEN's actual operating email is the `ltd` address.)
-- **README references wrong domain.** [README.md:107](README.md#L107) — `K-LINE MEN.com` (with space) repeated several times. Won't break anything, but signals "unfinished".
+- ~~**README references wrong domain.**~~ ✅ **Resolved 2026-05-08** — production domain confirmed as `klinemen.ug` (Uganda ccTLD owned by the business). Site-wide sweep replaced every `https://k-line-men.com` and `K-LINE MEN.com` reference: `SITE_URL` constants in [build-sitemap.mjs](scripts/build-sitemap.mjs) + [prerender-products.mjs](scripts/prerender-products.mjs), runtime canonical/JSON-LD injection in [site.js](assets/js/site.js), all `<link rel="canonical">` + OG tags in static pages, privacy + terms text, contact form WhatsApp footer, robots.txt sitemap pointer, README. Pre-rendered PDPs + sitemap.xml + og-card.jpg regenerated via `npm run build:all`.
 
 ### C3. Contact form is a pretend form
 ✅ **Resolved 2026-05-08** — form POSTs to Formspree (form ID `xykodlge`, free-tier account on `kiwanukaphil@gmail.com`; submissions land there and are forwarded as needed). Endpoint config lives in [products.js](assets/js/products.js#L289) as `KLINE.FORMSPREE_ENDPOINT`. Inputs got `name=` attributes; honeypot field added; `_subject` set to "K-LINE MEN — message from contact form". On success: form resets and a toast confirms ("Thanks — we will reply within one business day."). On any failure (network, non-2xx, unconfigured placeholder): falls back to opening WhatsApp prefilled with the same message so the customer's input is never lost.
@@ -257,7 +257,7 @@ A minimal SW that pre-caches the homepage, shop, and the product images for the 
 ✅ **Done 2026-05-07** — see [scripts/prerender-products.mjs](scripts/prerender-products.mjs). Run via `npm run prerender:products` (or `npm run build:all` to do everything). Output: 189 files at `/product/{id}.html`, each with pre-baked `<title>`, `<meta description>`, `<link rel="canonical">`, Open Graph + Twitter card meta, Product + Breadcrumb JSON-LD, and a `window.PRODUCT_ID` constant injected before `products.js` loads. Page body and scripts unchanged from `product.html` — `<base href="../">` keeps existing relative paths working. Internal product links across the site updated to the clean URL form.
 
 ### G3. Canonical tags
-- `<link rel="canonical" href="https://k-line-men.com/shop.html">` on shop (regardless of `?cat=`).
+- `<link rel="canonical" href="https://klinemen.ug/shop.html">` on shop (regardless of `?cat=`).
 - Per-product canonical pointing at the clean URL.
 
 ### G4. Update `<meta description>` per category
