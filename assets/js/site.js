@@ -210,9 +210,9 @@
   // and we fill them. Keeps every page's HTML small and consistent.
   function renderHeader(activePage) {
     const links = [
-      { href: 'shop.html',     label: 'Shop',          key: 'shop' },
-      { href: 'shop.html#categories', label: 'Categories', key: 'categories' },
-      { href: 'shop.html?badge=new',  label: 'New Arrivals', key: 'new' },
+      { href: 'shop',     label: 'Shop',          key: 'shop' },
+      { href: 'shop#categories', label: 'Categories', key: 'categories' },
+      { href: 'shop?badge=new',  label: 'New Arrivals', key: 'new' },
       { href: 'about.html',    label: 'About',         key: 'about' },
       { href: 'contact.html',  label: 'Contact',       key: 'contact' }
     ];
@@ -232,7 +232,7 @@
       +     '<a class="brand" href="index.html"><strong>K-LINE MEN</strong><span>Real Men Real Style</span></a>'
       +     '<nav class="nav-links" aria-label="Main navigation">' + navHTML + '</nav>'
       +     '<div class="nav-actions">'
-      +       '<a class="icon-btn" href="shop.html" aria-label="Shop">' + ICONS.search + '</a>'
+      +       '<a class="icon-btn" href="shop" aria-label="Shop">' + ICONS.search + '</a>'
       +       '<a class="icon-btn" href="wishlist.html" aria-label="Wishlist" id="hdr-wish">' + ICONS.heart + '<span class="badge-count" id="hdr-wish-count"' + wishHidden + '>' + wishCountValue + '</span></a>'
       +       '<a class="icon-btn" href="cart.html" aria-label="Bag" id="hdr-cart">' + ICONS.bag + '<span class="badge-count" id="hdr-cart-count"' + cartHidden + '>' + cartCountValue + '</span></a>'
       +       '<a class="whatsapp-small" href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN, I have a question.') + '" target="_blank" rel="noopener"><span class="whatsapp-dot"></span> WhatsApp</a>'
@@ -253,7 +253,7 @@
 
   function renderFooter() {
     const cats = window.KLINE_CATEGORIES.slice(0, 6).map(c =>
-      '<a href="shop.html?cat=' + c.slug + '">' + c.label + '</a>'
+      '<a href="shop?cat=' + c.slug + '">' + c.label + '</a>'
     ).join('');
     return ''
       + '<footer class="site-footer">'
@@ -266,7 +266,7 @@
       +           ICONS.instagram + '<span>' + window.KLINE.INSTAGRAM_HANDLE + ' — outfit ideas daily</span>'
       +         '</a>'
       +       '</div>'
-      +       '<div class="footer-col"><h3>Shop</h3>' + cats + '<a href="shop.html">All products</a></div>'
+      +       '<div class="footer-col"><h3>Shop</h3>' + cats + '<a href="shop">All products</a></div>'
       +       '<div class="footer-col"><h3>Help</h3><a href="faq.html">FAQs</a><a href="contact.html">Contact</a><a href="about.html">About</a><a href="faq.html#delivery">Delivery & returns</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>'
       +       '<div class="footer-col"><h3>Visit</h3>'
       +         '<p>WhatsApp: <a href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN!') + '" target="_blank" rel="noopener">' + window.KLINE.WHATSAPP_DISPLAY + '</a></p>'
@@ -523,8 +523,8 @@
       '@type': 'BreadcrumbList',
       'itemListElement': [
         { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://k-line-men.com/' },
-        { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': 'https://k-line-men.com/shop.html' },
-        { '@type': 'ListItem', 'position': 3, 'name': categoryLabel(product.category), 'item': 'https://k-line-men.com/shop.html?cat=' + product.category },
+        { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': 'https://k-line-men.com/shop' },
+        { '@type': 'ListItem', 'position': 3, 'name': categoryLabel(product.category), 'item': 'https://k-line-men.com/shop?cat=' + product.category },
         { '@type': 'ListItem', 'position': 4, 'name': product.name, 'item': productUrl }
       ]
     };

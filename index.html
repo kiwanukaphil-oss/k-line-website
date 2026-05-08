@@ -38,7 +38,7 @@
           <h1>Real Men.<br><em>Real Style.</em></h1>
           <p class="hero-copy">Smart, stylish menswear for work, weekends, and special occasions. Quality pieces that look premium, feel practical, and are easy to shop — straight from Kampala to your door.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="shop.html">Shop the collection</a>
+            <a class="btn btn-primary" href="shop">Shop the collection</a>
             <a class="btn btn-secondary" href="#looks">Get outfit ideas</a>
           </div>
           <div class="hero-note">
@@ -64,7 +64,7 @@
             <h2>Find your piece. Fast.</h2>
             <p>Shirts to shoes, polos to suits — straight to the rail you came for.</p>
           </div>
-          <a class="btn btn-secondary" href="shop.html">View all products</a>
+          <a class="btn btn-secondary" href="shop">View all products</a>
         </div>
         <div class="category-grid" id="cat-grid"></div>
       </div>
@@ -99,7 +99,7 @@
             </div>
             <div>
               <div class="mini-products"><span>Shirts</span><span>Trousers</span><span>Belts</span><span>Oxfords</span></div>
-              <a class="btn btn-bronze" style="margin-top:18px;" href="shop.html?occasion=work">Shop the edit</a>
+              <a class="btn btn-bronze" style="margin-top:18px;" href="shop?edit=work-ready&occasion=work">Shop the edit</a>
             </div>
           </article>
           <article class="edit-card">
@@ -115,7 +115,7 @@
             </div>
             <div>
               <div class="mini-products"><span>Polos</span><span>Jeans</span><span>Sneakers</span></div>
-              <a class="btn btn-outline" style="margin-top:18px;" href="shop.html?occasion=weekend">Shop the edit</a>
+              <a class="btn btn-outline" style="margin-top:18px;" href="shop?edit=weekend-smart&occasion=weekend">Shop the edit</a>
             </div>
           </article>
           <article class="edit-card">
@@ -131,7 +131,7 @@
             </div>
             <div>
               <div class="mini-products"><span>Blazers</span><span>Suits</span><span>Dress shoes</span></div>
-              <a class="btn btn-outline" style="margin-top:18px;" href="shop.html?occasion=event">Shop the edit</a>
+              <a class="btn btn-outline" style="margin-top:18px;" href="shop?edit=event-ready&occasion=event">Shop the edit</a>
             </div>
           </article>
         </div>
@@ -147,7 +147,7 @@
             <h2>Just landed.</h2>
             <p>New on the rail this week — usually gone by next.</p>
           </div>
-          <a class="btn btn-secondary" href="shop.html?badge=new">Shop new</a>
+          <a class="btn btn-secondary" href="shop?badge=new">Shop new</a>
         </div>
         <div class="product-grid" id="grid-new"></div>
       </div>
@@ -162,7 +162,7 @@
             <h2>What real men keep buying.</h2>
             <p>Pieces that earned their place. Tested in hundreds of Kampala wardrobes.</p>
           </div>
-          <a class="btn btn-secondary" href="shop.html?badge=bestseller">Shop best sellers</a>
+          <a class="btn btn-secondary" href="shop?badge=bestseller">Shop best sellers</a>
         </div>
         <div class="product-grid" id="grid-best"></div>
       </div>
@@ -185,7 +185,7 @@
             <p id="lw-copy">A clean polo, a tailored chino, suede on the foot, tortoise on the eyes. Drinks-after-work confidence without trying.</p>
             <div class="look-week-pieces" id="lw-pieces"></div>
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;">
-              <a class="btn btn-bronze" id="lw-shop" href="shop.html?occasion=smart-casual">Shop the look</a>
+              <a class="btn btn-bronze" id="lw-shop" href="shop?edit=smart-casual&occasion=smart-casual">Shop the look</a>
               <a class="btn btn-outline" href="https://www.instagram.com/k_linemen/" target="_blank" rel="noopener">See more on Instagram</a>
             </div>
           </div>
@@ -322,13 +322,13 @@
       // filter) so the category surfaces in the grid.
       if (img && count > 0) {
         return ''
-          + '<a class="category-card" href="shop.html?cat=' + slug + '">'
+          + '<a class="category-card" href="shop?cat=' + slug + '&collection=' + slug + '">'
           +   SITE.pictureHTML(img, cat.label)
           +   '<div class="label"><span class="count">' + count + ' pieces</span><h3>' + cat.label + '</h3></div>'
           + '</a>';
       }
       return ''
-        + '<a class="category-card category-card-stub" href="shop.html?cat=' + slug + '">'
+        + '<a class="category-card category-card-stub" href="shop?cat=' + slug + '&collection=' + slug + '">'
         +   '<div class="label"><span class="count">New category — coming soon</span><h3>' + cat.label + '</h3></div>'
         + '</a>';
     }).join('');

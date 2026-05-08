@@ -74,7 +74,7 @@
         + '<div style="padding:60px; text-align:center; grid-column: 1 / -1;">'
         +   '<h1 style="font-family:var(--display); font-size:48px; margin-bottom:12px; font-weight:600;">Product not found</h1>'
         +   '<p style="color:var(--muted); margin-bottom:24px;">The product you\'re looking for may have been moved or sold out.</p>'
-        +   '<a class="btn btn-primary" href="shop.html">Back to shop</a>'
+        +   '<a class="btn btn-primary" href="shop">Back to shop</a>'
         + '</div>';
       document.getElementById('related').remove();
     } else {
@@ -100,8 +100,8 @@
       /* ───── Breadcrumbs ───── */
       document.getElementById('breadcrumbs').innerHTML = ''
         + '<a href="index.html">Home</a><span>/</span>'
-        + '<a href="shop.html">Shop</a><span>/</span>'
-        + '<a href="shop.html?cat=' + product.category + '">' + SITE.categoryLabel(product.category) + '</a><span>/</span>'
+        + '<a href="shop">Shop</a><span>/</span>'
+        + '<a href="shop?cat=' + product.category + '">' + SITE.categoryLabel(product.category) + '</a><span>/</span>'
         + '<span style="color:var(--ink); opacity:1;">' + product.name + '</span>';
 
       /* ───── Render PDP ───── */

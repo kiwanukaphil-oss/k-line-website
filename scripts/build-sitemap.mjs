@@ -1,8 +1,8 @@
 /* ============================================================================
    K-LINE MEN — Sitemap builder
    Emits sitemap.xml covering:
-     - Static pages at root (/, /shop.html, /about.html, etc.)
-     - Per-category shop URLs (/shop.html?cat={slug})
+     - Static pages at root (/, /shop, /about.html, etc.)
+     - Per-category shop URLs (/shop?cat={slug})
      - Pre-rendered product pages (/product/{id}.html)
    Run: npm run build:sitemap   (or :  npm run build:all)
    ============================================================================ */
@@ -20,7 +20,7 @@ const OUT_PATH = path.join(ROOT, 'sitemap.xml');
 // content. Including them in the sitemap would contradict the noindex hint.
 const STATIC_PAGES = [
   { path: '/',              priority: '1.0' },
-  { path: '/shop.html',     priority: '0.9' },
+  { path: '/shop',     priority: '0.9' },
   { path: '/about.html',    priority: '0.6' },
   { path: '/contact.html',  priority: '0.6' },
   { path: '/faq.html',      priority: '0.5' },
@@ -53,7 +53,7 @@ async function main() {
     lines.push(urlEntry(SITE_URL + page.path, today, page.priority));
   }
   for (const c of categories) {
-    lines.push(urlEntry(SITE_URL + '/shop.html?cat=' + c.slug, today, '0.7'));
+    lines.push(urlEntry(SITE_URL + '/shop?cat=' + c.slug, today, '0.7'));
   }
   for (const p of products) {
     lines.push(urlEntry(SITE_URL + '/product/' + p.id + '.html', today, '0.8'));

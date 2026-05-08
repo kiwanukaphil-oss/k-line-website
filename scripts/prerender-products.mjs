@@ -80,8 +80,8 @@ function buildHeadInjection(product, categoryLabel) {
     '@type': 'BreadcrumbList',
     'itemListElement': [
       { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE_URL + '/' },
-      { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': SITE_URL + '/shop.html' },
-      { '@type': 'ListItem', 'position': 3, 'name': categoryLabel, 'item': SITE_URL + '/shop.html?cat=' + product.category },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Shop', 'item': SITE_URL + '/shop' },
+      { '@type': 'ListItem', 'position': 3, 'name': categoryLabel, 'item': SITE_URL + '/shop?cat=' + product.category },
       { '@type': 'ListItem', 'position': 4, 'name': product.name, 'item': url }
     ]
   };
