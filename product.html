@@ -107,15 +107,28 @@
         + '<span style="color:var(--ink); opacity:1;">' + product.name + '</span>';
 
       /* ───── Render PDP ───── */
-      // We only have one image per product right now. The thumb column is
-      // hidden via .single until a product has multiple shots.
+      // Gallery: primary product.image plus any extras in product.gallery
+      // (optional array, see products.js header). Single-image products keep
+      // the .single class so the CSS collapses the thumb column. Multi-image
+      // products render one thumb per shot, with the first marked active and
+      // matching the initial main image.
       const wishActive = SITE.inWishlist(product.id) ? ' is-active' : '';
       const wishIcon = SITE.inWishlist(product.id) ? SITE.icons.heartFill : SITE.icons.heart;
 
+      const galleryImages = [product.image].concat(product.gallery || []);
+      const isSingleImage = galleryImages.length === 1;
+      const thumbsHTML = isSingleImage ? '' : galleryImages.map((src, i) => ''
+        + '<button type="button" class="thumb' + (i === 0 ? ' active' : '') + '" '
+        +   'data-src="' + src + '" '
+        +   'aria-label="View image ' + (i + 1) + ' of ' + galleryImages.length + '">'
+        +   SITE.pictureHTML(src, '', { sizes: '84px' })
+        + '</button>'
+      ).join('');
+
       const pdpHTML = ''
-        + '<div class="pdp-gallery single">'
-        +   '<div class="thumbs"></div>'
-        +   '<div class="pdp-main">' + SITE.pictureHTML(product.image, product.name, { eager: true, sizes: '(max-width:980px) 100vw, 50vw' }) + '</div>'
+        + '<div class="pdp-gallery' + (isSingleImage ? ' single' : '') + '">'
+        +   '<div class="thumbs">' + thumbsHTML + '</div>'
+        +   '<div class="pdp-main">' + SITE.pictureHTML(galleryImages[0], product.name, { eager: true, sizes: '(max-width:980px) 100vw, 50vw' }) + '</div>'
         + '</div>'
         + '<div class="pdp-info">'
         +   '<div class="category-tag">' + SITE.categoryLabel(product.category) + '</div>'
@@ -223,6 +236,27 @@
                       'My usual size is: \nMy chest/waist measurements are: \n' +
                       'What would you recommend?';
           window.open(KLINE.whatsappUrl(msg), '_blank', 'noopener');
+        });
+      }
+
+      // Gallery thumbs: clicking a thumb swaps the main image and marks the
+      // new thumb active. No-op for single-image products since the thumbs
+      // container is empty. Re-uses pictureHTML so the swapped main image
+      // keeps WebP delivery + the same eager/priority hints as the initial
+      // render.
+      const thumbsContainer = document.querySelector('.pdp-gallery .thumbs');
+      if (thumbsContainer && !isSingleImage) {
+        thumbsContainer.addEventListener('click', e => {
+          const thumb = e.target.closest('.thumb');
+          if (!thumb) return;
+          const src = thumb.getAttribute('data-src');
+          if (!src) return;
+          thumbsContainer.querySelectorAll('.thumb').forEach(b => b.classList.remove('active'));
+          thumb.classList.add('active');
+          const main = document.querySelector('.pdp-gallery .pdp-main');
+          if (main) {
+            main.innerHTML = SITE.pictureHTML(src, product.name, { eager: true, sizes: '(max-width:980px) 100vw, 50vw' });
+          }
         });
       }
 

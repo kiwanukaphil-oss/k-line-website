@@ -53,13 +53,11 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 
 ### C2. Conflicting / placeholder contact details
 - ~~**Call number disagreement.**~~ ✅ **Resolved 2026-05-07** — correct call line is `+256 704 667 111`; transposition fixed in [products.js:276-277](assets/js/products.js#L276-L277).
-- ~~**Email looks placeholder.**~~ ✅ **Resolved 2026-05-07** — replaced with real address `klinedesignstudio@gmail.com` in [contact.html:35](contact.html#L35). (Same Gmail used by the sister design business — confirmed by owner.)
+- ~~**Email looks placeholder.**~~ ✅ **Resolved 2026-05-08** — set to `klinedesignltd@gmail.com` on the `KLINE.EMAIL` constant in [products.js](assets/js/products.js); contact page reads it dynamically, privacy + terms hardcoded copies updated. (`klinedesignstudio@gmail.com` was an earlier wrong assumption — that's a separate sister business; K-LINE MEN's actual operating email is the `ltd` address.)
 - **README references wrong domain.** [README.md:107](README.md#L107) — `K-LINE MEN.com` (with space) repeated several times. Won't break anything, but signals "unfinished".
 
 ### C3. Contact form is a pretend form
-✅ **Resolved 2026-05-07** — form now POSTs to Formspree (provider chosen by owner). Endpoint config lives in [products.js](assets/js/products.js#L284) as `KLINE.FORMSPREE_ENDPOINT`. Inputs got `name=` attributes; honeypot field added; `_subject` set to "K-LINE MEN — message from contact form". On success: form resets and a toast confirms ("Thanks — we will reply within one business day."). On any failure (network, non-2xx, unconfigured placeholder): falls back to opening WhatsApp prefilled with the same message so the customer's input is never lost.
-
-> ⚠️ **Action required before launch:** sign up at [formspree.io](https://formspree.io), create a form pointing at `klinedesignstudio@gmail.com`, replace `YOUR_FORM_ID` in [products.js:289](assets/js/products.js#L289) with the real form ID. Until that's done the form silently routes through WhatsApp.
+✅ **Resolved 2026-05-08** — form POSTs to Formspree (form ID `xykodlge`, free-tier account on `kiwanukaphil@gmail.com`; submissions land there and are forwarded as needed). Endpoint config lives in [products.js](assets/js/products.js#L289) as `KLINE.FORMSPREE_ENDPOINT`. Inputs got `name=` attributes; honeypot field added; `_subject` set to "K-LINE MEN — message from contact form". On success: form resets and a toast confirms ("Thanks — we will reply within one business day."). On any failure (network, non-2xx, unconfigured placeholder): falls back to opening WhatsApp prefilled with the same message so the customer's input is never lost.
 
 ### C4. PDP under-delivers on premium
 - **One image per product.** [product.html:14-16](product.html#L14-L16) hides the thumb column when there's only one image. For a UGX 750 k tuxedo this is unacceptable; you need at least 3 shots (full, detail, model/back).
@@ -332,9 +330,9 @@ The toast ([site.js:121-132](assets/js/site.js#L121-L132)) sets `role="status"` 
 2. ~~**Generate proper favicon set.**~~ ✅ **Done 2026-05-07** — see F2.
 3. ~~**Replace footer logo with SVG.**~~ ✅ **Done 2026-05-07** — went with a programmatically-generated transparent WebP instead of SVG (see F3); same outcome (12.2 KB vs. 755 KB) and the `mix-blend-mode` hack is gone.
 4. ~~**Confirm and fix call number**~~ ✅ **Done 2026-05-07** — `+256 704 667 111` in [products.js:276-277](assets/js/products.js#L276-L277).
-5. ~~**Provision real `hello@k-line-men.com` inbox**~~ ✅ **Done 2026-05-07** — replaced with `klinedesignstudio@gmail.com` in [contact.html:35](contact.html#L35).
+5. ~~**Provision real `hello@k-line-men.com` inbox**~~ ✅ **Done 2026-05-08** — `KLINE.EMAIL` set to `klinedesignltd@gmail.com` in [products.js](assets/js/products.js); contact page reads it dynamically.
 6. **Commit untracked product images** (caps, sandals, gym, sunglasses, watches-003+, accessories-004+). [E9] — site is currently broken for those categories on a clean clone.
-7. ~~**Wire the contact form to real email**~~ ✅ **Done 2026-05-07** — Formspree wired in [contact.html](contact.html) with WhatsApp fallback on any failure. ⚠️ Still need to paste the real form ID into [products.js:289](assets/js/products.js#L289) before launch.
+7. ~~**Wire the contact form to real email**~~ ✅ **Done 2026-05-08** — Formspree wired in [contact.html](contact.html) with WhatsApp fallback on any failure; live form ID `xykodlge` in [products.js:289](assets/js/products.js#L289).
 8. ~~**Wire the "Need help?" size link**~~ ✅ **Done 2026-05-07** — opens WhatsApp prefilled with product context + sizing prompts; focus ring added.
 9. ~~**Add JSON-LD: Organization + LocalBusiness on home/footer; Product + Offer on PDP.**~~ ✅ **Done 2026-05-07** — see C7. Includes Breadcrumb on PDP. Auto-injected via SITE.mount() on every page; pre-rendered PDP files also ship static JSON-LD for crawlers that don't run JS.
 10. ~~**Pre-render PDP `<title>` and `<meta description>`**~~ ✅ **Done 2026-05-07** — [scripts/prerender-products.mjs](scripts/prerender-products.mjs) generates 189 product pages. See C7. Note the canonical-URL switch from `/product.html?id=X` to `/product/{id}.html` — old URLs still work but redirect intent is captured via `<link rel="canonical">`. Optional: add a Netlify `_redirects` line `/product.html  /product/:id  301  id=:id` to push old links onto the canonical form.

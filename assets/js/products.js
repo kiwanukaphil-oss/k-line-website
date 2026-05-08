@@ -2,7 +2,14 @@
    Single source of truth for every product on the site. Edit prices, names,
    stock, sizes, or copy here and every page that loads this script reflects it.
    Prices are placeholder UGX values per category — update with real numbers
-   once finalised. */
+   once finalised.
+
+   Optional fields (omit when not used):
+     gallery: ['assets/images/<cat>/<id>-2.png', '...-3.png']
+       Extra product shots beyond `image` (the primary). When present, the PDP
+       renders a thumb per image and swaps the main view on click. Run
+       `npm run optimize:images` after adding new files so WebP variants exist;
+       run `npm run prerender:products` to refresh the static PDP pages. */
 
 window.KLINE_CATEGORIES = [
   { slug: 'shirts',      label: 'Shirts' },
@@ -275,16 +282,16 @@ window.KLINE = {
   WHATSAPP_RAW:     '256777466979',
   CALL_DISPLAY:     '+256 704 667 111',
   CALL_RAW:         '256704667111',
-  EMAIL:            'klinedesignstudio@gmail.com',
+  EMAIL:            'klinedesignltd@gmail.com',
 
   /* Social */
   INSTAGRAM_HANDLE: '@k_linemen',
   INSTAGRAM_URL:    'https://www.instagram.com/k_linemen/',
 
-  /* Contact form provider — Formspree.
-     Sign up at https://formspree.io, create a form pointed at the EMAIL above,
-     and replace YOUR_FORM_ID with the form ID Formspree gives you. The contact
-     page will POST submissions to this endpoint and fall back to WhatsApp if
-     the network fails or if this is still the placeholder. */
-  FORMSPREE_ENDPOINT: 'https://formspree.io/f/YOUR_FORM_ID'
+  /* Contact form provider — Formspree (free tier, account-owner email).
+     Submissions land in the Formspree-account inbox tied to this form ID. The
+     contact page POSTs here and falls back to opening WhatsApp prefilled with
+     the same message on any failure (network, non-2xx, or placeholder ID), so
+     the customer's input is never lost. */
+  FORMSPREE_ENDPOINT: 'https://formspree.io/f/xykodlge'
 };
