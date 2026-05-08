@@ -88,7 +88,7 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 ## D. Design and UX recommendations
 
 ### D1. Header
-- **Search icon is a link, not a search.** [site.js:204](assets/js/site.js#L204) — clicking the magnifier just goes to `shop.html`. Either remove it (the shop has a clear search bar) or wire it to focus the search field. Right now it's UX debt.
+- ~~**Search icon is a link, not a search.**~~ ✅ **Resolved 2026-05-08** — removed the magnifier icon from the header `nav-actions` row in [site.js](assets/js/site.js). Three signals had been disagreeing (visual = search, aria-label = "Shop", behaviour = navigate). Shop page still ships its own magnifier glyph inside the real search input ([shop.html:36](shop.html#L36)), so search remains discoverable one click away. `ICONS.search` definition kept since shop.html still consumes it.
 - **Brand mark on mobile.** At <640 px the header uses 22 px text — fine — but the brand and the WhatsApp icon both compete for thumb space. Consider dropping the "Real Men Real Style" subtitle on mobile.
 - **Announcement bar fatigue.** [styles.css:67](assets/css/styles.css#L67) — three pieces of copy ("New styles weekly · IG · WhatsApp") in a 12 px uppercase row. On 360 px wide it becomes 3 lines and feels noisy. Trim to one rotating line, or hide on mobile.
 
@@ -358,7 +358,7 @@ The toast ([site.js:121-132](assets/js/site.js#L121-L132)) sets `role="status"` 
 27. Remove [preview (2).html](preview%20(2).html), [WEBSITE_REVIEW.md](WEBSITE_REVIEW.md), and the [Product images/](Product%20images/) folder. [E8]
 28. ~~Cart: "saved on this device" copy.~~ ✅ Done 2026-05-07 — line added beneath the WhatsApp checkout block. Also collapsed the duplicate "Items subtotal" / "Subtotal (excl. delivery)" rows into a single "Total + delivery" line. [C6]
 29. Cart: minimum-order or delivery-fee preview. [C6]
-30. Header: ~~drop "Real Men Real Style" subtitle on mobile~~ ✅ done 2026-05-07; remove the dead search icon link or wire it to focus the search field — *still open, needs design pick*. [D1]
+30. Header: ~~drop "Real Men Real Style" subtitle on mobile~~ ✅ done 2026-05-07; ~~remove the dead search icon link or wire it to focus the search field~~ ✅ removed 2026-05-08. [D1]
 31. Submit sitemap to Google Search Console + claim Google Business Profile + Bing Places. [G7]
 
 ### Nice to have later (months 2–3)

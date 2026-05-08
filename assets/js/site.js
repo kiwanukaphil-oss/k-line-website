@@ -232,7 +232,6 @@
       +     '<a class="brand" href="index.html"><strong>K-LINE MEN</strong><span>Real Men Real Style</span></a>'
       +     '<nav class="nav-links" aria-label="Main navigation">' + navHTML + '</nav>'
       +     '<div class="nav-actions">'
-      +       '<a class="icon-btn" href="shop" aria-label="Shop">' + ICONS.search + '</a>'
       +       '<a class="icon-btn" href="wishlist.html" aria-label="Wishlist" id="hdr-wish">' + ICONS.heart + '<span class="badge-count" id="hdr-wish-count"' + wishHidden + '>' + wishCountValue + '</span></a>'
       +       '<a class="icon-btn" href="cart.html" aria-label="Bag" id="hdr-cart">' + ICONS.bag + '<span class="badge-count" id="hdr-cart-count"' + cartHidden + '>' + cartCountValue + '</span></a>'
       +       '<a class="whatsapp-small" href="' + window.KLINE.whatsappUrl('Hello K-LINE MEN, I have a question.') + '" target="_blank" rel="noopener"><span class="whatsapp-dot"></span> WhatsApp</a>'

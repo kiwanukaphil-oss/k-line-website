@@ -67,7 +67,7 @@ These are the only items blocking a clean public launch (from [LAUNCH_READINESS_
 | 2 | Replace IG strip fallback with real `@k_linemen` screenshots, or hide the section | All seven `look-*` shots share the same studio/lighting/style — to a careful customer they read as catalog rather than as "real Instagram" | 1 hr |
 | 3 | Add a real second image + fabric/care content for the top 10 products | UGX 750 k tuxedo with one photo and one paragraph won't convert | 2–3 days (allow more if photography needs to be commissioned) |
 | 4 | Owner-review of [privacy.html](privacy.html) + [terms.html](terms.html) for legal-entity registration details | Trading-name field intentionally left for owner | 30 min |
-| 5 | Decide on "search icon → focus search field" vs "remove search icon" in header | Currently a dead link | 5 min design pick |
+| 5 | ~~Decide on "search icon → focus search field" vs "remove search icon" in header~~ ✅ **Done 2026-05-08** — removed (header was sending three disagreeing signals; shop page still has the real search input one click away) | — | — |
 
 **Once those are closed, Phase 0 is done and the site is launch-ready as a Kampala soft-launch.** Everything else moves into the post-launch backlog tracked in the launch review.
 
