@@ -163,7 +163,7 @@
           <div class="look-week-body">
             <div class="eyebrow">Friday smart</div>
             <h2 id="lw-title">The end-of-week edit.</h2>
-            <p id="lw-copy">A clean polo, a tailored chino, leather on the foot, time on the wrist. Drinks-after-work confidence without trying.</p>
+            <p id="lw-copy">A clean polo, a tailored chino, suede on the foot, tortoise on the eyes. Drinks-after-work confidence without trying.</p>
             <div class="look-week-pieces" id="lw-pieces"></div>
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;">
               <a class="btn btn-bronze" id="lw-shop" href="shop.html?occasion=smart-casual">Shop the look</a>
@@ -329,34 +329,38 @@
     document.getElementById('icon-card').innerHTML = SITE.icons.card;
 
     /* ─── Look of the Week ───
-       Update LOOK_OF_WEEK_IDS to swap the featured outfit. The first id is the
-       hero image; the rest become clickable chips beneath the copy. */
-    const LOOK_OF_WEEK_IDS = ['polos-001', 'khakis-002', 'shoes-003', 'watches-001'];
+       Hero image is a styled flatlay from assets/images/looks/ (decoupled
+       from the product chips so you can swap the visual without changing
+       the inventory). LOOK_OF_WEEK_IDS are the chips beneath the copy and
+       must reflect what's actually in the photo. To rotate the look, swap
+       LOOK_OF_WEEK_IMAGE + LOOK_OF_WEEK_ALT and update the IDs to match. */
+    const LOOK_OF_WEEK_IMAGE = 'assets/images/looks/look-002.png';
+    const LOOK_OF_WEEK_ALT   = 'White polo, soft tan chino, tan suede penny loafer, tortoise wayfarer — the K-LINE smart-casual edit';
+    const LOOK_OF_WEEK_IDS   = ['polos-003', 'khakis-002', 'shoes-003', 'sunglasses-002'];
     const lookPieces = LOOK_OF_WEEK_IDS.map(id => KLINE.byId(id)).filter(Boolean);
+    document.getElementById('lw-media').insertAdjacentHTML(
+      'beforeend',
+      SITE.pictureHTML(LOOK_OF_WEEK_IMAGE, LOOK_OF_WEEK_ALT, { sizes: '(max-width:980px) 100vw, 55vw' })
+    );
     if (lookPieces.length) {
-      const hero = lookPieces[0];
-      document.getElementById('lw-media').insertAdjacentHTML(
-        'beforeend',
-        SITE.pictureHTML(hero.image, hero.name, { sizes: '(max-width:980px) 100vw, 55vw' })
-      );
       document.getElementById('lw-pieces').innerHTML = lookPieces.map(p =>
         '<a href="product/' + p.id + '.html">' + p.name + '</a>'
       ).join('');
     }
 
     /* ─── Instagram strip ───
-       Until real IG screenshots are dropped into assets/images/instagram/, we
-       render curated catalog imagery via the WebP pipeline so the layout is
-       fast and never empty. When real ig-X.jpg images are added, give each one
-       its own WebP variants (or extend optimize-images.mjs to handle .jpg) and
-       point the `image` field at the new path. */
+       6 styled flatlays standing in for real @k_linemen posts — each one is
+       a complete outfit, not a single product, so the strip authentically
+       mirrors the "shop outfits, not pieces" register. Replace with real
+       Instagram screenshots when available; the captions can stay since they
+       describe the look rather than the post. */
     const IG_TILES = [
-      { image: 'assets/images/suits/suits-001.png',     caption: 'Royal navy 2-piece' },
-      { image: 'assets/images/polos/polos-001.png',     caption: 'Signature polo Friday' },
-      { image: 'assets/images/shoes/shoes-001.png',     caption: 'Walnut Oxford' },
-      { image: 'assets/images/jackets/jackets-002.png', caption: 'Saturday in leather' },
-      { image: 'assets/images/watches/watches-001.png', caption: 'Two-tone on wrist' },
-      { image: 'assets/images/blazers/blazers-001.png', caption: 'Hopsack blazer fit' }
+      { image: 'assets/images/looks/look-001.png', caption: 'Saturday navy' },
+      { image: 'assets/images/looks/look-003.png', caption: 'Friday all-black' },
+      { image: 'assets/images/looks/look-004.png', caption: 'Work ready' },
+      { image: 'assets/images/looks/look-007.png', caption: 'Hopsack blazer fit' },
+      { image: 'assets/images/looks/look-009.png', caption: 'Saturday denim' },
+      { image: 'assets/images/looks/look-010.png', caption: 'Gingham + grey' }
     ];
     const igSizes = '(max-width:640px) 50vw, (max-width:1080px) 33vw, 16vw';
     document.getElementById('ig-grid').innerHTML = IG_TILES.map(tile => ''

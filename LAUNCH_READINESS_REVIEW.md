@@ -107,10 +107,10 @@ Fix those three and you have a launch. Without them, expect bounce rates above 7
 - **Stub category card** ([styles.css:494-502](assets/css/styles.css#L494-L502)) — looks great but says "New category — coming soon". For sandals/caps/sunglasses/gym you actually *have* products. Verify the category-image mappings ([index.html:271-273](index.html#L271-L273)) line up with the committed images — git status shows many of these are untracked (see E9).
 
 ### D4. Look of the Week
-- **The hero image is the same single product shot.** [index.html:323-324](index.html#L323-L324) — `lw-image.src = hero.image` (currently `polos-001.png`). For "Look of the Week" you want a styled outfit photo, not the polo on a white background. Add a `looks` array to the catalog or load `assets/images/looks/look-week.jpg`.
+✅ **Resolved 2026-05-08** — hero image decoupled from the product chip list. Now uses `assets/images/looks/look-002.png` (a styled flatlay: white polo + soft tan chino + tan suede penny loafer + tortoise wayfarer). `LOOK_OF_WEEK_IMAGE` is a separate constant from `LOOK_OF_WEEK_IDS`, so swapping the visual is a one-line edit. Copy and product chips updated to match what's actually in the photo.
 
 ### D5. IG strip
-- **Falls back to catalog product images.** [index.html:336-341](index.html#L336-L341) — when `assets/images/instagram/ig-1.jpg` etc. don't exist, it shows the same `suits-001.png` already used elsewhere. To a returning customer those are the same shots they just saw in "Just landed" — feels like a stage set. Either hide the IG strip until real screenshots ship, or pull from the [Instagram/](Instagram/) folder that already exists in the repo (currently untracked).
+✅ **Resolved 2026-05-08** — IG strip now uses 6 styled flatlays from `assets/images/looks/` (see Section J resolution below). Each tile is a complete outfit instead of a catalog repeat. Captions match the look ("Saturday navy", "Hopsack blazer fit", "Gingham + grey", etc.). Will be swapped for real `@k_linemen` screenshots when available; the wiring is unchanged so the swap is a path-level edit.
 
 ### D6. Footer
 - **Hours line is hardcoded.** [site.js:244](assets/js/site.js#L244) "Open Mon–Sat · 9am–7pm" — make sure Google Business Profile matches.
@@ -379,9 +379,11 @@ The toast ([site.js:121-132](assets/js/site.js#L121-L132)) sets `role="status"` 
 
 ## J. Strategic note — the brand register problem
 
-The biggest decision in front of you isn't on this list. There are two registers fighting: **editorial-magazine site** vs. **daily-imperative IG**. The site does the editorial register beautifully — but if a customer arrives from `@k_linemen` they expect *the same energy*, and the homepage Look-of-the-Week + IG strip are the bridge. Right now both are stubbed out. Until styled outfit photography ships (not catalog product shots), the bridge is broken and the site feels disconnected from the IG that's presumably driving most of the traffic.
+The biggest decision in front of you isn't on this list. There are two registers fighting: **editorial-magazine site** vs. **daily-imperative IG**. The site does the editorial register beautifully — but if a customer arrives from `@k_linemen` they expect *the same energy*, and the homepage Look-of-the-Week + IG strip are the bridge.
 
-If forced to pick one thing to compound brand equity post-launch, that's it — **three real outfit shots per month**, used as Look of the Week, IG strip source, and OG card.
+✅ **Bridge built 2026-05-08** — 10 styled flatlays added to `assets/images/looks/`. Look of the Week now leads with a real outfit (white polo + tan chino + tan suede penny + tortoise wayfarer), not a single polo on a white background. IG strip shows 6 different complete outfits with their own captions, so a returning customer doesn't see the same `suits-001` and `polos-001` they already saw earlier on the page. The two lanes finally feel connected.
+
+**Next compounding move** — keep the cadence going. The site is now able to absorb a steady flow of new outfit shots: drop a new `look-NNN.png` into `assets/images/looks/`, run `npm run optimize:images`, and update `LOOK_OF_WEEK_IMAGE` (one line) to rotate. Three new flatlays per month would keep the bridge alive without a content overhaul.
 
 ---
 
