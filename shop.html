@@ -226,9 +226,26 @@
       empty.style.display = list.length ? 'none' : 'block';
 
       document.getElementById('results-count').textContent = list.length + ' ' + (list.length === 1 ? 'product' : 'products');
+
+      // Title reflects every active filter so the customer can see at a glance
+      // which "edit" they're looking at after clicking through from a homepage
+      // card. Reads the same labels the side rail uses for occasions; falls
+      // back to the slug for any tag without a label entry.
+      const badgeLabels = { 'new': 'New arrivals', 'bestseller': 'Bestsellers', 'signature': 'K-LINE Signature' };
       const titleParts = [];
       if (state.category !== 'all') titleParts.push(KLINE_CATEGORIES.find(c => c.slug === state.category).label);
-      if (state.badges.size) titleParts.push(Array.from(state.badges).join(', '));
+      if (state.occasions.size === 1) {
+        const o = Array.from(state.occasions)[0];
+        titleParts.push((occasionLabels[o] || o) + ' edit');
+      } else if (state.occasions.size > 1) {
+        titleParts.push(Array.from(state.occasions).map(o => occasionLabels[o] || o).join(' + ') + ' edit');
+      }
+      if (state.badges.size === 1) {
+        const b = Array.from(state.badges)[0];
+        titleParts.push(badgeLabels[b] || b);
+      } else if (state.badges.size > 1) {
+        titleParts.push(Array.from(state.badges).map(b => badgeLabels[b] || b).join(' · '));
+      }
       document.getElementById('shop-title').textContent = titleParts.length ? titleParts.join(' · ') : 'All products';
 
       // Reflect in URL so filters survive sharing/refresh
