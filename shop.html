@@ -246,7 +246,11 @@
       } else if (state.badges.size > 1) {
         titleParts.push(Array.from(state.badges).map(b => badgeLabels[b] || b).join(' · '));
       }
-      document.getElementById('shop-title').textContent = titleParts.length ? titleParts.join(' · ') : 'All products';
+      const heading = titleParts.length ? titleParts.join(' · ') : 'All products';
+      document.getElementById('shop-title').textContent = heading;
+      // Mirror to <title> so the browser tab also reflects the active filter
+      // (and acts as a quick visual confirmation that apply() ran with state).
+      document.title = (heading === 'All products' ? 'Shop' : heading) + ' — K-LINE MEN';
 
       // Reflect in URL so filters survive sharing/refresh
       const search = new URLSearchParams();
