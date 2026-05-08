@@ -344,19 +344,36 @@
     });
   }
   function wireMobileDrawer() {
-    // The drawer is a small dialog. We track aria-expanded on the toggle,
-    // aria-hidden on the drawer, return focus to the toggle on close, and
-    // close on Escape. This is the minimum needed for keyboard/screen-reader
-    // users to use the menu without getting trapped.
+    // The drawer is a small dialog: aria-expanded on the toggle, aria-hidden
+    // on the drawer, focus returns to the toggle on close, Escape closes, and
+    // (added 2026-05-08) Tab / Shift+Tab cycles within the drawer instead of
+    // escaping into the page behind. The drawer's focusable set is static so
+    // we cache it once at wire time.
     const drawer = document.getElementById('mobile-drawer');
     const openBtn = document.getElementById('hdr-menu');
     const closeBtn = document.getElementById('hdr-menu-close');
     if (!drawer || !openBtn) return;
 
+    const focusables = drawer.querySelectorAll('a[href], button');
+
+    function trapTab(e) {
+      if (e.key !== 'Tab' || focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
     function open() {
       drawer.classList.add('open');
       drawer.setAttribute('aria-hidden', 'false');
       openBtn.setAttribute('aria-expanded', 'true');
+      drawer.addEventListener('keydown', trapTab);
       // Defer focus until the panel has actually transitioned in.
       setTimeout(() => { if (closeBtn) closeBtn.focus(); }, 50);
     }
@@ -364,6 +381,7 @@
       drawer.classList.remove('open');
       drawer.setAttribute('aria-hidden', 'true');
       openBtn.setAttribute('aria-expanded', 'false');
+      drawer.removeEventListener('keydown', trapTab);
       openBtn.focus();
     }
 

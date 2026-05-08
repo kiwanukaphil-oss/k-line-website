@@ -23,9 +23,7 @@
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#111827">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -83,8 +81,17 @@
           </div>
         </div>
 
+        <!-- Each card backed by an outfit flatlay from assets/images/looks/.
+             Background picture is decorative (alt=""); the card text describes
+             what the customer is shopping. -->
         <div class="edits-grid">
           <article class="edit-card featured">
+            <div class="edit-card-bg">
+              <picture>
+                <source type="image/webp" srcset="assets/images/looks/look-004-400.webp 400w, assets/images/looks/look-004-800.webp 800w, assets/images/looks/look-004.webp 1200w" sizes="(max-width:980px) 100vw, 40vw">
+                <img src="assets/images/looks/look-004.png" alt="" loading="lazy" decoding="async">
+              </picture>
+            </div>
             <div>
               <div class="eyebrow" style="color:#d9c0a2">Featured edit</div>
               <h3>Work Ready</h3>
@@ -96,23 +103,35 @@
             </div>
           </article>
           <article class="edit-card">
+            <div class="edit-card-bg">
+              <picture>
+                <source type="image/webp" srcset="assets/images/looks/look-001-400.webp 400w, assets/images/looks/look-001-800.webp 800w, assets/images/looks/look-001.webp 1200w" sizes="(max-width:980px) 100vw, 30vw">
+                <img src="assets/images/looks/look-001.png" alt="" loading="lazy" decoding="async">
+              </picture>
+            </div>
             <div>
               <h3>Weekend Smart</h3>
               <p>Polos, jeans, sneakers, and watches for a relaxed Saturday — confident without trying too hard.</p>
             </div>
             <div>
               <div class="mini-products"><span>Polos</span><span>Jeans</span><span>Sneakers</span></div>
-              <a class="btn btn-secondary" style="margin-top:18px;" href="shop.html?occasion=weekend">Shop the edit</a>
+              <a class="btn btn-outline" style="margin-top:18px;" href="shop.html?occasion=weekend">Shop the edit</a>
             </div>
           </article>
           <article class="edit-card">
+            <div class="edit-card-bg">
+              <picture>
+                <source type="image/webp" srcset="assets/images/looks/look-005-400.webp 400w, assets/images/looks/look-005-800.webp 800w, assets/images/looks/look-005.webp 1200w" sizes="(max-width:980px) 100vw, 30vw">
+                <img src="assets/images/looks/look-005.png" alt="" loading="lazy" decoding="async">
+              </picture>
+            </div>
             <div>
               <h3>Event Ready</h3>
               <p>Blazers, suits, dress shoes, and accessories for the occasions that need to be remembered.</p>
             </div>
             <div>
               <div class="mini-products"><span>Blazers</span><span>Suits</span><span>Dress shoes</span></div>
-              <a class="btn btn-secondary" style="margin-top:18px;" href="shop.html?occasion=event">Shop the edit</a>
+              <a class="btn btn-outline" style="margin-top:18px;" href="shop.html?occasion=event">Shop the edit</a>
             </div>
           </article>
         </div>
@@ -243,18 +262,27 @@
   <script>
     SITE.mount('home');
 
-    // Hero showcase — three product photos, eager-loaded for above-the-fold paint.
+    // Hero showcase — two signature product shots + one styled outfit flatlay.
+    // Each entry is either kind:'product' (image + href derived from KLINE.byId)
+    // or kind:'look' (explicit image + href). Eager-loaded for above-the-fold.
     const HERO_PHOTOS = [
-      { id: 'suits-001', label: 'The Navy Suit',     alt: 'Royal Navy 2-Piece Suit',  cls: 'hero-photo hp-tall' },
-      { id: 'polos-001', label: 'Signature Polo',    alt: 'K-LINE Signature Navy Polo', cls: 'hero-photo' },
-      { id: 'shoes-001', label: 'Walnut Oxford',     alt: 'Walnut Cap-Toe Oxford',    cls: 'hero-photo' }
+      { kind: 'product', id: 'suits-001', label: 'The Navy Suit',     alt: 'Royal Navy 2-Piece Suit',     cls: 'hero-photo hp-tall' },
+      { kind: 'product', id: 'polos-001', label: 'Signature Polo',    alt: 'K-LINE Signature Navy Polo',  cls: 'hero-photo' },
+      { kind: 'look',    image: 'assets/images/looks/look-007.png', href: 'product/blazers-001.html', label: 'The Smart Edit', alt: 'Navy hopsack blazer over a sky oxford with khaki chinos and brown monk-strap shoes', cls: 'hero-photo' }
     ];
     const heroSizes = '(max-width:980px) 50vw, 25vw';
     document.getElementById('hero-showcase').innerHTML = HERO_PHOTOS.map(h => {
-      const p = KLINE.byId(h.id);
-      const src = p ? p.image : '';
+      let src, href;
+      if (h.kind === 'product') {
+        const p = KLINE.byId(h.id);
+        src = p ? p.image : '';
+        href = 'product/' + h.id + '.html';
+      } else {
+        src = h.image;
+        href = h.href || '#';
+      }
       return ''
-        + '<a class="' + h.cls + '" href="product/' + h.id + '.html">'
+        + '<a class="' + h.cls + '" href="' + href + '">'
         +   SITE.pictureHTML(src, h.alt, { eager: true, sizes: heroSizes })
         +   '<span class="hp-label">' + h.label + '</span>'
         + '</a>';

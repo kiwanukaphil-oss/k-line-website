@@ -552,25 +552,55 @@ section { padding: 80px 0; }
   grid-template-columns: 1.2fr 1fr 1fr;
   gap: 18px;
 }
+/* Each edit card now sits over a styled flatlay (assets/images/looks/) with a
+   dark gradient overlay for legibility. This connects the homepage editorial
+   register to the IG-style outfit photography in the Look-of-the-Week and
+   IG strip below. */
 .edit-card {
-  background: #fff;
-  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
   border-radius: var(--radius);
   padding: 28px;
   min-height: 280px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 6px 18px rgba(17,24,39,.04);
+  box-shadow: 0 6px 18px rgba(17,24,39,.08);
   transition: transform .25s ease, box-shadow .25s ease;
 }
 .edit-card:hover { transform: translateY(-3px); box-shadow: var(--hover-shadow); }
+.edit-card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.edit-card-bg picture,
+.edit-card-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.edit-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(17,24,39,.92) 0%, rgba(17,24,39,.5) 55%, rgba(17,24,39,.74) 100%);
+  pointer-events: none;
+}
+.edit-card > *:not(.edit-card-bg) {
+  position: relative;
+  z-index: 2;
+}
 .edit-card.featured {
-  background: var(--ink);
-  color: #fff;
   min-height: 380px;
-  background-image: radial-gradient(circle at 82% 20%, rgba(166,120,69,.36), transparent 35%);
-  border-color: var(--ink);
+}
+.edit-card.featured::after {
+  background:
+    radial-gradient(circle at 82% 20%, rgba(166,120,69,.4), transparent 38%),
+    linear-gradient(to top, rgba(17,24,39,.94) 0%, rgba(17,24,39,.5) 55%, rgba(17,24,39,.7) 100%);
 }
 .edit-card h3 {
   font-family: var(--display);
@@ -578,9 +608,9 @@ section { padding: 80px 0; }
   line-height: 1;
   font-weight: 600;
   margin-bottom: 12px;
+  color: #fff;
 }
-.edit-card p { color: var(--muted); }
-.edit-card.featured p { color: rgba(255,255,255,.78); }
+.edit-card p { color: rgba(255,255,255,.82); }
 .mini-products {
   display: flex;
   gap: 8px;
@@ -588,8 +618,8 @@ section { padding: 80px 0; }
   margin-top: 20px;
 }
 .mini-products span {
-  background: var(--mist);
-  color: var(--ink);
+  background: rgba(255,255,255,.14);
+  color: #fff;
   border-radius: var(--radius-pill);
   padding: 8px 12px;
   font-size: 11px;
@@ -597,7 +627,6 @@ section { padding: 80px 0; }
   text-transform: uppercase;
   letter-spacing: .04em;
 }
-.featured .mini-products span { background: rgba(255,255,255,.14); color: #fff; }
 
 /* ───────── Product card (real images) ───────── */
 .product-grid {
