@@ -9,10 +9,12 @@ compatibility_date = "2026-05-09"
 pages_build_output_dir = "./dist"
 
 # D1 binding — created via `npm run db:create` (klinemen-cms, ENAM region).
+# migrations_dir tells `wrangler d1 migrations apply` where to find SQL files.
 [[d1_databases]]
 binding = "DB"
 database_name = "klinemen-cms"
 database_id = "5b164a6a-1501-4566-81fc-6bb7ecd25c98"
+migrations_dir = "migrations"
 
 # R2 bucket for original product image uploads. WebP variants are served via
 # Cloudflare Images, not R2 directly. Created in Phase 1a step 4.

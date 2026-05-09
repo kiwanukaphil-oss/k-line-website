@@ -14,6 +14,7 @@
     "db:create": "wrangler d1 create klinemen-cms",
     "db:migrate:local": "wrangler d1 migrations apply klinemen-cms --local",
     "db:migrate:prod": "wrangler d1 migrations apply klinemen-cms --remote",
+    "db:seed:build": "node scripts/build-seed.mjs",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

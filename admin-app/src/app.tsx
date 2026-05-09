@@ -9,9 +9,12 @@ type HealthPayload = {
   user?: string;
 };
 
+type CatalogCount = number | "checking" | "error";
+
 export function App() {
   const [status, setStatus] = useState<HealthStatus>("checking");
   const [payload, setPayload] = useState<HealthPayload | null>(null);
+  const [catalogCount, setCatalogCount] = useState<CatalogCount>("checking");
 
   useEffect(() => {
     fetch("/healthz")
@@ -25,7 +28,23 @@ export function App() {
         setStatus(data.ok ? "ok" : "error");
       })
       .catch(() => setStatus("error"));
+
+    fetch("/api/products/count")
+      .then(async (r) => {
+        if (!r.ok) {
+          setCatalogCount("error");
+          return;
+        }
+        const data = (await r.json()) as { count: number };
+        setCatalogCount(data.count);
+      })
+      .catch(() => setCatalogCount("error"));
   }, []);
+
+  const catalogDisplay =
+    catalogCount === "checking" ? "checking…"
+      : catalogCount === "error" ? "unavailable"
+        : `${catalogCount} published`;
 
   return (
     <main class="shell">
@@ -51,10 +70,14 @@ export function App() {
             <span class="status-value">{payload.phase}</span>
           </p>
         )}
+        <p class="status-row">
+          <span class="status-label">Catalog</span>
+          <span class="status-value">{catalogDisplay}</span>
+        </p>
       </section>
 
       <p class="placeholder">
-        Phase 1a scaffold. Editor surfaces — products, homepage, looks — land in Phase 1d.
+        Phase 1b: schema + seed live in D1. Editor surfaces land in Phase 1d.
       </p>
     </main>
   );
