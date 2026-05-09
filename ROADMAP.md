@@ -352,13 +352,12 @@ KLINE website/
 │   ├── build-sitemap.mjs           — sitemap.xml regenerator
 │   ├── build-from-d1.mjs           — Phase 1: regenerates products.js from D1 before other build steps
 │   └── fetch-fonts.mjs             — self-hosted font sync
-├── admin-app/                      — Phase 1: Preact admin SPA (admin.klinemen.ug)
-│   ├── src/
-│   └── vite.config.js
-├── worker/                         — Phase 1: Cloudflare Worker API (klinemen-api)
-│   ├── src/
-│   ├── schema.sql                  — D1 schema + migrations
-│   └── wrangler.toml
+├── admin-app/                      — Phase 1: Preact admin SPA + Pages Functions (admin.klinemen.ug)
+│   ├── src/                        — Preact app
+│   ├── functions/                  — Pages Functions (the API, same-origin with the SPA)
+│   ├── migrations/                 — D1 SQL migrations (Phase 1b+)
+│   ├── wrangler.toml               — Cloudflare bindings (D1, R2)
+│   └── vite.config.ts
 ├── _headers                        — Cache-Control + security headers
 ├── _redirects                      — old PDP URL → clean URL 301
 ├── sitemap.xml                     — generated, 213 URLs

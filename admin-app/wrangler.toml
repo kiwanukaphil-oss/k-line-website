@@ -1,0 +1,24 @@
+# K-LINE MEN admin dashboard — Cloudflare Pages config.
+# Deploys the Preact SPA from ./dist and serves Pages Functions from ./functions.
+#
+# Phase 1a: only the /healthz function ships. D1 + R2 bindings are declared
+# here but commented until the resources are created (see README.md §3 and §4).
+
+name = "klinemen-admin"
+compatibility_date = "2026-05-09"
+pages_build_output_dir = "./dist"
+
+# D1 binding — created via `npm run db:create` (klinemen-cms, ENAM region).
+[[d1_databases]]
+binding = "DB"
+database_name = "klinemen-cms"
+database_id = "5b164a6a-1501-4566-81fc-6bb7ecd25c98"
+
+# R2 bucket for original product image uploads. WebP variants are served via
+# Cloudflare Images, not R2 directly. Created in Phase 1a step 4.
+# [[r2_buckets]]
+# binding = "IMAGES"
+# bucket_name = "klinemen-images"
+
+[vars]
+ENVIRONMENT = "production"
