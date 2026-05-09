@@ -5,9 +5,6 @@ Product images/
 # Instagram reference screenshots — used locally for brand voice reference, not for deployment.
 Instagram/
 
-# Sanity CMS scaffold — local experiment, not part of the deployed static site.
-sanity/
-
 # Local debug screenshots (Cloudflare deploy diagnostics, etc.) — kept locally for reference, not part of the site.
 cloudflare*.jpg
 cloudflare*.png

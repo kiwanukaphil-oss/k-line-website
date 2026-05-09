@@ -1,6 +1,6 @@
 # K-LINE MEN — Site Roadmap
 
-> **Date:** 2026-05-08
+> **Date:** 2026-05-09
 > **Companion to:** [LAUNCH_READINESS_REVIEW.md](LAUNCH_READINESS_REVIEW.md) (exhaustive launch audit) and [README.md](README.md) (build commands).
 > **Purpose:** A higher-level view of where the site has been, where it is now, and where it's going. The launch review is granular and tied to specific lines; this document is the strategic narrative.
 
@@ -11,8 +11,8 @@
 | Phase | Label | Status | Rough timing |
 |---|---|---|---|
 | **0** | Static editorial site (HTML/CSS/JS, WhatsApp checkout) | **Launch-ready — punch-list only** | Now |
-| **1** | Headless CMS for staff content management | **Drafted, awaiting install approval** | Next 4 weeks (slips if approval doesn't land in week 1) |
-| **2** | CMS-powered editorial features (rotating Looks, scheduled promos, content workflow) | Planned | Months 2–3 |
+| **1** | Custom admin dashboard (Cloudflare-native, role-based) | **Approved 2026-05-09 — building** | ~6 weeks of focused build |
+| **2** | Auto-rotation, real Instagram feed, testimonials | Planned | Months 2–3 |
 | **3** | Real online checkout (Snipcart / Shopify decision) | Planned | Months 6–12 |
 | **4** | Growth — loyalty, broadcast, content compounding | Planned | Year 2 |
 
@@ -87,83 +87,124 @@ These deferrals are deliberate: they keep Phase 0 shippable in days, not months,
 
 ---
 
-## 3. Phase 1 — Headless CMS (drafted, awaiting approval)
+## 3. Phase 1 — Custom admin dashboard (approved 2026-05-09)
 
 ### 3.1 Why this is the next phase
 
-The site is editorially strong but every content change today requires a developer. A Look of the Week swap is a one-line edit to `LOOK_OF_WEEK_IMAGE` in code; a price update requires editing [products.js](assets/js/products.js). That doesn't scale to a shop with non-technical staff. Phase 1 introduces a CMS layer so staff can edit content without touching code, while keeping the design tokens, layout, and templates developer-controlled.
+The site is editorially strong but every content change today requires a developer. A Look of the Week swap is a one-line edit to `LOOK_OF_WEEK_IMAGE` in code; a price update requires editing [products.js](assets/js/products.js); a contact-detail change is a hunt across HTML files. That doesn't scale to a shop with non-technical staff. Phase 1 introduces a **custom admin dashboard** so staff can edit content without touching code, while the design tokens, layout, templates, and build pipeline stay developer-controlled.
 
-### 3.2 What's been drafted (this session, untracked)
+A previous draft of this phase used Sanity (a hosted headless CMS). After review, we're building our own — same data shape, same publishing flow, but on infrastructure we own end-to-end. Trade-offs: more upfront build effort (~6 weeks vs. ~1 day to wire up Sanity), but no third-party lock-in, no per-user cost ceiling, and a UX we can tune to the K-LINE MEN brand instead of inheriting Sanity Studio's chrome.
 
-Sitting in [sanity/](sanity/) for review — **nothing is installed or wired to the live site**:
+### 3.2 Approach
 
-| File | Purpose |
-|---|---|
-| [sanity/README.md](sanity/README.md) | Phase 1 install steps when approved |
-| [sanity/sanity.config.js](sanity/sanity.config.js) | Studio config + custom sidebar layout |
-| [sanity/schemas/product.js](sanity/schemas/product.js) | Product schema with full validation |
-| [sanity/schemas/category.js](sanity/schemas/category.js) | Categories with intro copy + hero image |
-| [sanity/schemas/look.js](sanity/schemas/look.js) | Look of the Week + Shop the Look (one type, two roles) |
-| [sanity/schemas/promotion.js](sanity/schemas/promotion.js) | Banner with auto-expiring start/end dates |
-| [sanity/schemas/faq.js](sanity/schemas/faq.js) | Repeating Q+A items |
-| [sanity/schemas/homepage.js](sanity/schemas/homepage.js) | Singleton: hero, best sellers, featured collection |
-| [sanity/schemas/settings.js](sanity/schemas/settings.js) | Singleton: contact, social, WhatsApp message template |
-| [sanity/schemas/deliveryReturns.js](sanity/schemas/deliveryReturns.js) | Singleton: short policy text |
-| [sanity/scripts/migrate-products.mjs](sanity/scripts/migrate-products.mjs) | One-time migration: products.js → Sanity NDJSON |
+**Cloudflare-native, single-vendor stack:**
 
-**Verified:** the migration script produces 17 categories + 189 products = 206 NDJSON lines from the live [products.js](assets/js/products.js) without modifying it.
+| Layer | Choice | Why |
+|---|---|---|
+| Public site | Cloudflare Pages, static HTML/CSS/JS (unchanged) | Phase 0 work preserved |
+| Admin app | Preact SPA at `admin.klinemen.ug`, Cloudflare Pages | Reactive UI for forms-heavy workflows; ~3 KB runtime |
+| API | Cloudflare Worker (`klinemen-api`) | Single Worker handles all `/api/*` routes |
+| Database | Cloudflare D1 (SQLite) | 5 GB free, far in excess of 189 products + revisions |
+| Image storage | Cloudflare R2 + Cloudflare Images | Edge-cached WebP variants for premium UX feel |
+| Auth | Cloudflare Access (Google login, allow-list) | No password store to secure; free up to 50 users |
+| Roles | Manager (publish + approve) and Editor (drafts only) | Cloudflare Access groups carry the role; Worker enforces on every write |
 
-### 3.3 Phase 1 plan (when approved)
+**Data flow:**
 
-| Step | Action | Effort | Risk |
+```
+Editor edits in admin → Worker writes a draft to D1
+   → entity status = 'pending_review' → Manager queue
+Manager approves → Worker promotes draft to 'published'
+   → triggers Cloudflare Pages deploy hook
+   → scripts/build-from-d1.mjs regenerates assets/js/products.js,
+     /product/*.html, sitemap.xml from D1
+   → Pages deploys → live in <90s
+```
+
+`assets/js/products.js` keeps existing in the repo as a **generated artefact** — schema unchanged, anything that imports `window.KLINE_PRODUCTS` keeps working. The fallback story: if the build pipeline ever breaks, the last-good `products.js` is one revert away and the site renders identically.
+
+### 3.3 Scope at v1
+
+**In:** Products + categories · Homepage + Looks + Promotions · Site copy (FAQs, settings, delivery & returns) · Image upload pipeline (drag-drop, auto WebP via Cloudflare Images) · Stock-per-size with WhatsApp template integration · WhatsApp inquiry log + Reports tab · Approval workflow + 30-day revision history with one-click undo.
+
+**Out (deferred to Phase 2 or later):** Real Instagram embed · Reviews / testimonials · Auto-scheduled weekly Look rotation (manual scheduling is in v1; the cron that auto-promotes the next look without staff intervention is Phase 2).
+
+**Premium UX commitments** — these aren't free, they account for ~1 week of the timeline:
+
+- Live preview pane next to every editor — see the product card / homepage hero render in real time as you type.
+- Autosave with status indicator (`Saved · 2s ago`).
+- 30-day revision history + one-click undo on every entity.
+- Drag-drop image upload with instant thumbnail, drag-to-reorder, click-to-crop.
+- Mobile-responsive admin — Look of the Week update from the showroom floor.
+- Plain-language labels everywhere ("Show on homepage", not `featured: true`).
+- Brand-matched chrome (Cormorant + Manrope + K-LINE palette).
+- Inline help on every field; "Preview as live site" staging URL before publish.
+- Thoughtful empty states.
+
+### 3.4 Build phases
+
+Each phase ends with a demo for owner sign-off before the next starts.
+
+| # | Phase | Effort | Demo at the end |
 |---|---|---|---|
-| 1.1 | `cd sanity && npm install` | 10 min | None — isolated folder |
-| 1.2 | `npx sanity init` to create the project on sanity.io free tier | 15 min | None |
-| 1.3 | Run `migrate-products.mjs` and import the NDJSON into the dataset | 15 min | Low — re-runnable |
-| 1.4 | Asset-upload script: push the 189 product images into Sanity's CDN, link them to product documents | 1–2 hr | Low — separate script, re-runnable |
-| 1.5 | Manually populate Homepage, Settings, Delivery & Returns singletons in Studio | 30 min | None |
-| 1.6 | Replace `assets/js/products.js` with a build-time fetch from Sanity that emits the same `window.KLINE_PRODUCTS` global | 2–3 hr | **Medium — verify all pages still render before deploying.** Keep `products.js` checked in as a frozen snapshot for 2 weeks after Sanity goes live; if the build-time fetch breaks, swap one `<script>` tag back to the snapshot and the site renders identically. Delete the snapshot once 2 weeks of clean publishes pass. |
-| 1.7 | Wire publish webhook → Cloudflare Pages / Netlify rebuild | 30 min | Low |
-| 1.8 | Train one staff member as Manager (publish rights), one as Editor (draft-only) | 1 hr | None |
+| 1a | Cloudflare bootstrap (Pages, Worker, D1, R2, Access with 2 user groups) | ½ day | `admin.klinemen.ug/healthz` returns 200, only for allow-listed Google logins |
+| 1b | D1 schema + seed migration (port 17 cats + 189 products from `products.js`) + revisions + audit log tables | 1 day | `SELECT count(*) FROM products` returns 189 |
+| 1c | Image pipeline (Cloudflare Images, signed-URL upload, drag-drop component) | 1 day | Upload a PNG, get back 4 WebP variants instantly |
+| 1d | Catalog admin UI (products + categories CRUD, live preview, autosave, undo) | 5 days | Owner edits a real product end-to-end with full UX polish |
+| 1e | Build pipeline (`scripts/build-from-d1.mjs`, deploy hook on publish only) | 2 days | Save in admin → live site updated in <90s |
+| 1f | Homepage + Looks + Promotions admin UI | 3 days | Look of the Week swap published without touching code |
+| 1g | Site copy admin UI (FAQs, settings, delivery & returns) | 1 day | Contact details / WhatsApp template / FAQ editable |
+| 1h | Stock-per-size + WhatsApp template surfaces in-stock sizes only | 1 day | Out-of-stock sizes drop from the WhatsApp message |
+| 1i | Inquiry log + Reports tab | 1 day | First inquiry shows up in the dashboard within a minute |
+| 1j | Approval workflow (pending queue, diff view, comments, role enforcement) | 2 days | Editor drafts → Manager approves → Editor sees the result |
+| 1k | Brand-matched chrome + inline help + empty states + mobile pass | 2 days | Admin feels like K-LINE MEN's own software, not generic admin |
+| 1l | Cutover (freeze `products.js` snapshot, switch live build to D1 source, observe 2 weeks) | 2 days + 2-week observation | Snapshot rollback never used → snapshot deleted |
 
-**Total focused effort: roughly one day.**
+**Total focused effort: ~6 weeks.**
 
-### 3.4 What stays the same after Phase 1
+### 3.5 What stays the same after Phase 1
 
 - The live storefront is still static HTML/CSS/JS. No SSR, no React, no framework.
-- Build commands (`npm run build:all`) keep working — they just pull data from Sanity instead of reading the local JS file.
+- Build commands (`npm run build:all`) keep working — they gain one step (`build-from-d1`) that runs before existing scripts.
 - WhatsApp checkout is unchanged.
 - All the SEO, performance, and accessibility work from Phase 0 is preserved.
+- `assets/js/products.js` is now a generated artefact, not authored. Anything that reads `window.KLINE_PRODUCTS` keeps working unchanged.
 
-### 3.5 Decisions to confirm before Phase 1 starts
+### 3.6 Decisions made (2026-05-09)
 
-1. **Sanity vs Decap CMS.** Drafted Sanity. Decap is the free Git-based alternative. See [sanity/README.md](sanity/README.md) for the comparison.
-2. **Best sellers: manual curation vs auto-from-badge.** Drafted manual. Easy to flip.
-3. **Hosting: Cloudflare Pages vs Netlify.** Both free at this scale. Cloudflare is faster in East Africa; Netlify has the simplest webhook story.
+| Decision | Outcome | Reasoning |
+|---|---|---|
+| CMS approach | Custom dashboard, not Sanity / not Decap | Premium UX bar + non-technical staff target audience required tunable chrome and brand-matched experience that off-the-shelf Studios don't deliver |
+| Hosting | Cloudflare (Pages + Worker + D1 + R2 + Access + Images) | Single vendor, fastest in East Africa, free tier covers ≥12 months |
+| Auth model | Cloudflare Access, Manager + Editor roles | No password store; Google login; Access groups → JWT claims → Worker enforces |
+| Admin UI framework | Preact + Vite | Forms-heavy + live preview + autosave demands reactivity; ~3 KB runtime |
+| Image pipeline | Cloudflare Images ($5/mo) | Edge-cached variants on first fetch; thumbnails appear instantly for premium feel |
+| Subdomain | `admin.klinemen.ug` (separate from public) | Clean separation: "the shop" vs "the office" |
+| Site copy in v1 | Included (FAQs, settings, delivery & returns) | Removing every developer dependency for non-technical staff was the brief |
+| Best sellers | Manual list (deferred from old plan, still right) | Owner-curated; auto-from-badge can land later if needed |
 
-### 3.6 Phase 1 done when
+### 3.7 Phase 1 done when
 
-- One non-developer staff member has published a Look of the Week swap and a price update without developer involvement.
-- 2 consecutive weeks of clean Sanity publishes with no manual fallback to the `products.js` snapshot.
-- Webhook → CDN rebuild completes in under 90 seconds (target — current static build is sub-15s, so margin is comfortable).
+- 189 products and 17 categories live in D1; `assets/js/products.js` regenerates from D1 cleanly on every push.
+- Both Manager and at least one Editor have published a real change end-to-end (Editor drafts → Manager approves → live in <90s) without developer involvement.
+- Two consecutive weeks of clean publishes with no manual fallback to the `products.js` snapshot.
+- WhatsApp inquiry log is producing weekly inquiry-volume numbers — these become the input to §5.2 to decide which Phase 3 path applies.
 - The frozen `products.js` snapshot has been deleted from the repo.
 
 ---
 
-## 4. Phase 2 — CMS-powered editorial features (months 2–3)
+## 4. Phase 2 — Auto-rotation, real Instagram, testimonials (months 2–3)
 
-Once staff are comfortable with the CMS, the site can absorb richer editorial workflows that aren't worth building until the CMS is live.
+Phase 1 already covers stock-per-size, manual scheduling for Looks and Promotions, the WhatsApp inquiry log, and the approval workflow. Phase 2 adds the cron automation, the live Instagram feed, and customer-facing social proof.
 
 ### 4.1 Planned
 
 | Feature | What changes |
 |---|---|
-| **Weekly Look rotation** | Look of the Week becomes a scheduled document. Staff stage next week's look in advance; it goes live automatically Monday morning. |
-| **Scheduled promotions** | Black Friday, Eid, year-end sales banner — stage it weeks in advance with start/end dates. Auto-shows, auto-hides. |
-| **Stock per size** | Every product variant carries its own stock count. WhatsApp message template includes only in-stock sizes. Closes the trust gap from §C4 of the launch review. |
-| **Real Instagram embed** | Replace the IG strip's fallback flatlays with a real `@k_linemen` feed via a server-side proxy (Cloudflare Worker, Netlify Function, or equivalent) using whatever IG-feed mechanism is current at the time. ⚠️ Meta has been actively reducing third-party access to Instagram APIs — Basic Display was deprecated for new apps in late 2024. If no live API is workable when Phase 2 lands, fall back to a Sanity-managed manual `igPost` array updated weekly by staff. Less automatic, still on-brand. |
-| **Reviews / testimonials** | New `testimonial` schema. Curated, owner-approved. Surfaces on PDPs and the homepage trust strip. |
-| **WhatsApp inquiry log** | Cloudflare Worker captures every "Order on WhatsApp" click, writes to a Sanity `inquiry` document. Admin dashboard "Reports" tab surfaces volume + which products convert. |
+| **Weekly Look auto-rotation** | Look of the Week scheduling already exists in Phase 1; Phase 2 adds a Cron Trigger Worker that auto-promotes the next scheduled look on its `active_from` date without staff intervention. |
+| **Scheduled promotion auto-trigger** | Promotions already carry start/end dates from Phase 1; Phase 2 adds the cron that fires a rebuild on each transition so banners auto-show and auto-hide on schedule. |
+| **Real Instagram embed** | Replace the IG strip's fallback flatlays with a real `@k_linemen` feed via a server-side proxy (Cloudflare Worker) using whatever IG-feed mechanism is current at the time. ⚠️ Meta has been actively reducing third-party access to Instagram APIs — Basic Display was deprecated for new apps in late 2024. If no live API is workable when Phase 2 lands, fall back to a dashboard-managed manual `igPost` array updated weekly by staff. Less automatic, still on-brand. |
+| **Reviews / testimonials** | New `testimonial` entity in the dashboard. Curated, owner-approved. Surfaces on PDPs and the homepage trust strip. |
 
 ### 4.2 What this gives the business
 
@@ -171,10 +212,10 @@ A non-technical staff member can run the editorial calendar — weekly looks, mo
 
 ### 4.3 Phase 2 done when
 
-- Stock counts have prevented at least one *"we don't actually have that"* exchange on WhatsApp.
-- The Look of the Week has been **scheduled** (not manually published) for 4 consecutive weeks.
-- The WhatsApp inquiry log is producing monthly inquiry-volume numbers — these become the input to §5.2 to decide which Phase 3 path applies.
+- The Look of the Week has been **auto-rotated** (scheduled in advance, no Monday-morning intervention) for 4 consecutive weeks.
 - A scheduled promotion has run end-to-end (auto-show on start date, auto-hide on end date) without staff intervention.
+- At least one customer testimonial is live on a PDP and the homepage trust strip.
+- The IG strip is showing real `@k_linemen` content (live API or manual fallback — whichever is workable) instead of the launch-time flatlays.
 
 ---
 
@@ -189,7 +230,7 @@ When monthly WhatsApp order volume justifies it, real card / Mobile Money checko
 - Cons: Snipcart is ~2% per transaction. Mobile Money support requires integrating Flutterwave or DPO Pay alongside.
 - Estimated effort: 1–2 weeks.
 
-**Path B — Migrate the storefront to Shopify, keep Sanity as the editorial CMS via Shopify's Storefront API.**
+**Path B — Migrate the storefront to Shopify, keep the K-LINE admin dashboard as the editorial CMS via Shopify's Storefront API.**
 - Pros: Best-in-class checkout. Mobile Money via Flutterwave plugin is mature. Order management, customer accounts, abandoned cart, gift cards — all included.
 - Cons: ~$30/mo + theme development. The custom editorial design needs a faithful Shopify theme rebuild (~2 weeks). Lock-in to Shopify's templating.
 - Estimated effort: 4–6 weeks.
@@ -246,12 +287,8 @@ A consolidated list of everything that's waiting on an explicit call. None of th
 
 | # | Decision | Where it surfaces | Drafted default | By when |
 |---|---|---|---|---|
-| 1 | Sanity vs Decap CMS | Phase 1 | Sanity | Before Phase 1 step 1.1 |
-| 2 | Best sellers: manual list vs auto from `bestseller` badge | Phase 1 | Manual | Phase 1 step 1.5 |
-| 3 | Hosting: Cloudflare Pages vs Netlify | Phase 1 | Cloudflare (East Africa latency) | Before first deploy |
-| 4 | Replace IG strip fallback with real screenshots, or hide the section | Phase 0 close-out | Awaiting screenshots | Before public launch |
-| 5 | Header search icon: wire to focus search, or remove | Phase 0 close-out | Awaiting design pick | Before public launch |
-| 6 | Snipcart vs Shopify migration for real checkout | Phase 3 | Defer until Phase 2 data is in | Trigger fires per §5.2 |
+| 1 | Replace IG strip fallback with real screenshots, or hide the section | Phase 0 close-out | Awaiting screenshots | Before public launch |
+| 2 | Snipcart vs Shopify migration for real checkout | Phase 3 | Defer until Phase 2 data is in | Trigger fires per §5.2 |
 
 ---
 
@@ -263,13 +300,13 @@ Steady-state monthly run-rate per phase. Numbers are current at time of writing 
 
 | Phase | Hosting | CMS | Form / payments | Other | Monthly total |
 |---|---|---|---|---|---|
-| **Phase 0** | Free (Netlify or Cloudflare Pages) | — | Free (Formspree, 50 submissions/mo) | Domain ~$1/mo | **~$1/mo** |
-| **Phase 1** | Free | Free (Sanity free tier) | — | — | **~$1/mo** |
-| **Phase 2** | Free | Free | — | Cloudflare Workers ~$5/mo for IG proxy + inquiry log; Sanity free tier still adequate | **~$6/mo** |
-| **Phase 3 — Path A** | Free | Free | Snipcart ~$10/mo + ~2% per transaction; Flutterwave/DPO Pay fees on Mobile Money | — | **~$10/mo + transaction %** |
-| **Phase 3 — Path B** | Shopify Basic ~$30/mo | Sanity stays for editorial | Shopify Payments + Flutterwave plugin | One-off Shopify theme rebuild ~$1,500 | **~$30/mo + theme one-off** |
+| **Phase 0** | Free (Cloudflare Pages) | — | Free (Formspree, 50 submissions/mo) | Domain ~$1/mo | **~$1/mo** |
+| **Phase 1** | Free (Cloudflare Pages + Worker + D1 + R2 + Access free tiers) | — | — | Cloudflare Images ~$5/mo + domain ~$1/mo | **~$6/mo** |
+| **Phase 2** | Free | — | — | Cloudflare Cron Triggers free; Phase 1 stack continues | **~$6/mo** |
+| **Phase 3 — Path A** | Free | — | Snipcart ~$10/mo + ~2% per transaction; Flutterwave/DPO Pay fees on Mobile Money | Phase 1 stack continues | **~$16/mo + transaction %** |
+| **Phase 3 — Path B** | Shopify Basic ~$30/mo | K-LINE admin stays for editorial | Shopify Payments + Flutterwave plugin | One-off Shopify theme rebuild ~$1,500; Phase 1 stack continues | **~$36/mo + theme one-off** |
 
-Phase 0 is essentially free. Phase 1 doesn't change the run rate. Phase 2 introduces the first material monthly cost ($5–10). Phase 3 is where the meter starts.
+Phase 0 is essentially free. Phase 1 introduces the first material monthly cost (~$5 for Cloudflare Images). Phase 2 doesn't change the run rate. Phase 3 is where the per-transaction meter starts.
 
 ### 9.2 Risks per phase
 
@@ -278,10 +315,11 @@ Top risks and mitigations. Not exhaustive — these are the ones I'd actively mo
 | Phase | Top risk | Mitigation |
 |---|---|---|
 | **Phase 0** | Browser caches stale HTML during deploys; users see old shop layout | Already mitigated — `_headers` sets HTML pages to `no-cache, must-revalidate`. Verified working. |
-| **Phase 1** | Sanity changes free-tier limits or pricing | Decap CMS is the back-up — Git-based, no vendor lock-in. Migration would take 1–2 weeks; staff retraining minimal. |
-| **Phase 1** | Build-time fetch from Sanity breaks; site goes down at the worst moment | The `products.js` snapshot rollback (§3.3 step 1.6) means recovery is one-line revert. |
-| **Phase 2** | Meta deprecates Instagram Basic Display API (or whatever its successor is); the IG strip stops updating | Manual `igPost` fallback (§4.1) — staff drops in 6 screenshots weekly. Less automatic, still on-brand. |
-| **Phase 2** | Sanity inquiry-log volume exceeds free tier (10k docs / 500k API requests) | Not realistic for an inquiry log at K-LINE MEN's expected volume; if it ever happens, archive monthly to a smaller summary doc. |
+| **Phase 1** | Build pipeline (`build-from-d1`) fails on a publish; site goes stale or breaks | Frozen `products.js` snapshot kept for 4 weeks post-cutover (Phase 1l); rollback is a one-line revert. |
+| **Phase 1** | Cloudflare Access lockout (Google account access lost) | Configure email OTP as a backup method at setup. Owner also keeps a recovery code stored offline. |
+| **Phase 1** | D1 free-tier read budget bursts during a marketing push | Build script caches D1 reads to a local JSON during the build; production traffic hits the static site, not D1. Only the build step ever reads D1. |
+| **Phase 1** | Cloudflare changes free-tier terms or pricing | D1 + R2 + Pages are export-portable: SQLite file + S3-compatible objects + static files. 1–2 day migration to any other host (Fly.io, Hetzner, Supabase). No proprietary schema. |
+| **Phase 2** | Meta deprecates Instagram Basic Display API (or whatever its successor is); the IG strip stops updating | Manual `igPost` fallback (§4.1) — staff drops in 6 screenshots weekly via the admin. Less automatic, still on-brand. |
 | **Phase 3** | Mobile Money provider approval times in Uganda are slow (Flutterwave/DPO Pay take 4–12 weeks) | Apply 8–12 weeks before the Phase 3 trigger fires per §5.2. Don't block on the application — finish front-end integration in parallel. |
 | **Phase 3** | Path B (Shopify) theme migration drifts from the existing custom design | Lock down the theme to mirror the current homepage rhythm before migrating. Treat it as a Shopify theme port, not a redesign. |
 | **Phase 4** | WhatsApp Business broadcast policy tightens (Meta has changed broadcast rules ~yearly) | Build email opt-in alongside as a redundant channel. WhatsApp is the primary; email is the safety net. |
@@ -301,7 +339,7 @@ KLINE website/
 ├── *.html                          — page templates (index, shop, product, cart, ...)
 ├── assets/
 │   ├── css/styles.css              — all styles, design tokens at top
-│   ├── js/products.js              — single source of truth for catalog (Phase 0)
+│   ├── js/products.js              — Phase 0: single source of truth; Phase 1: generated artefact from D1
 │   ├── js/site.js                  — shared header/footer/cart/wishlist, JSON-LD injection
 │   ├── images/                     — WebP-optimised product photos
 │   └── fonts/                      — self-hosted Cormorant + Manrope
@@ -312,12 +350,15 @@ KLINE website/
 │   ├── generate-og-card.mjs        — 1200×630 social card
 │   ├── prerender-products.mjs      — emits /product/{id}.html
 │   ├── build-sitemap.mjs           — sitemap.xml regenerator
+│   ├── build-from-d1.mjs           — Phase 1: regenerates products.js from D1 before other build steps
 │   └── fetch-fonts.mjs             — self-hosted font sync
-├── sanity/                         — CMS draft, NOT installed (Phase 1)
-│   ├── README.md
-│   ├── sanity.config.js
-│   ├── schemas/
-│   └── scripts/migrate-products.mjs
+├── admin-app/                      — Phase 1: Preact admin SPA (admin.klinemen.ug)
+│   ├── src/
+│   └── vite.config.js
+├── worker/                         — Phase 1: Cloudflare Worker API (klinemen-api)
+│   ├── src/
+│   ├── schema.sql                  — D1 schema + migrations
+│   └── wrangler.toml
 ├── _headers                        — Cache-Control + security headers
 ├── _redirects                      — old PDP URL → clean URL 301
 ├── sitemap.xml                     — generated, 213 URLs
@@ -333,4 +374,4 @@ KLINE website/
 - Don't delete completed phases — the history is useful for new contributors.
 - Companion to [LAUNCH_READINESS_REVIEW.md](LAUNCH_READINESS_REVIEW.md), not a replacement. This file stays high-level; line-level detail goes in the launch review.
 
-*Maintained at the repo root. Last updated 2026-05-08.*
+*Maintained at the repo root. Last updated 2026-05-09.*
