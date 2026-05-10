@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
 import type { Category, ProductListPage } from "../../functions/_lib/types";
 import { ApiError, listCategories, listProducts } from "../lib/api";
 import { CatalogTable } from "../components/CatalogTable";
@@ -16,6 +17,7 @@ type StatusFilter = "all" | "draft" | "pending_review" | "published" | "archived
 const PAGE_SIZE = 50;
 
 export function Catalog() {
+  const location = useLocation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [page, setPage] = useState<ProductListPage | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -99,10 +101,13 @@ export function Catalog() {
   return (
     <div class="page page-catalog">
       <header class="catalog-header">
-        <h1 class="page-title">Catalog</h1>
-        <p class="catalog-summary">
-          {loading && total === 0 ? "Loading…" : `${total} product${total === 1 ? "" : "s"}${filterSummary}`}
-        </p>
+        <div class="catalog-header-titles">
+          <h1 class="page-title">Catalog</h1>
+          <p class="catalog-summary">
+            {loading && total === 0 ? "Loading…" : `${total} product${total === 1 ? "" : "s"}${filterSummary}`}
+          </p>
+        </div>
+        <a href="/catalog/new" class="catalog-new-button">+ New product</a>
       </header>
 
       <div class="catalog-filters">
@@ -145,6 +150,7 @@ export function Catalog() {
           sortKey={sortKey}
           sortDir={sortDir}
           onSort={onSort}
+          onRowClick={(p) => location.route(`/catalog/${p.id}`)}
         />
       )}
 

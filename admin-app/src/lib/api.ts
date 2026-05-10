@@ -7,10 +7,37 @@
 
 import type {
   Category,
+  EntityStatus,
   Product,
   ProductListFilters,
   ProductListPage
 } from "../../functions/_lib/types";
+
+// Shapes the editor sends. Mirrors the backend's ProductInput / ProductUpdate
+// but redeclared here so the SPA doesn't pull in workers-types via the
+// products.ts module (only types.ts is import-clean).
+export interface ProductWriteInput {
+  name?: string;
+  categorySlug?: string;
+  price?: number;
+  salePrice?: number | null;
+  colorName?: string | null;
+  colorHex?: string | null;
+  description?: string | null;
+  featured?: boolean;
+  status?: EntityStatus;
+  images?: Array<{ url: string; alt?: string | null }>;
+  sizes?: Array<{ size: string; stockCount?: number | null }>;
+  occasions?: string[];
+  badges?: string[];
+}
+
+export interface ProductCreateInput extends ProductWriteInput {
+  id: string;
+  name: string;
+  categorySlug: string;
+  price: number;
+}
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -66,4 +93,24 @@ export async function getProduct(id: string): Promise<Product> {
 export async function listCategories(): Promise<Category[]> {
   const data = await request<{ categories: Category[] }>("/api/categories");
   return data.categories;
+}
+
+export async function updateProduct(id: string, patch: ProductWriteInput): Promise<Product> {
+  const data = await request<{ ok: boolean; product: Product }>(
+    `/api/products/${encodeURIComponent(id)}`,
+    { method: "PATCH", body: JSON.stringify(patch) }
+  );
+  return data.product;
+}
+
+export async function createProduct(input: ProductCreateInput): Promise<Product> {
+  const data = await request<{ ok: boolean; product: Product }>(
+    "/api/products",
+    { method: "POST", body: JSON.stringify(input) }
+  );
+  return data.product;
+}
+
+export async function archiveProduct(id: string): Promise<void> {
+  await request<{ ok: boolean }>(`/api/products/${encodeURIComponent(id)}`, { method: "DELETE" });
 }

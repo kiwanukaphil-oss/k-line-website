@@ -2,6 +2,7 @@ import { LocationProvider, Router, Route } from "preact-iso";
 import { AppShell } from "./components/AppShell";
 import { Dashboard } from "./pages/Dashboard";
 import { Catalog } from "./pages/Catalog";
+import { ProductEditor } from "./pages/ProductEditor";
 import { Test } from "./pages/Test";
 
 // Top-level router. preact-iso handles client-side navigation so anchor
@@ -15,6 +16,8 @@ export function App() {
         <Router>
           <Route path="/" component={Dashboard} />
           <Route path="/catalog" component={Catalog} />
+          <Route path="/catalog/new" component={ProductEditor} />
+          <Route path="/catalog/:id" component={ProductEditor} />
           <Route path="/test" component={Test} />
           <Route default component={NotFound} />
         </Router>
