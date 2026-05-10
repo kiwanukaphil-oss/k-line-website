@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import { ImageUploader } from "./components/ImageUploader";
 
 type HealthStatus = "checking" | "ok" | "error";
 
@@ -77,8 +78,10 @@ export function App() {
       </section>
 
       <p class="placeholder">
-        Phase 1b: schema + seed live in D1. Editor surfaces land in Phase 1d.
+        Phase 1c: image pipeline live. Editor surfaces land in Phase 1d.
       </p>
+
+      <ImageUploader />
     </main>
   );
 }

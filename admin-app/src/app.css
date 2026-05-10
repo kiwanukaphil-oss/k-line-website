@@ -94,3 +94,190 @@ body {
   font-size: 0.875rem;
   font-style: italic;
 }
+
+/* Image uploader (Phase 1c) ------------------------------------------------ */
+
+.uploader {
+  margin-top: 3rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 2rem;
+}
+
+.uploader-heading {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  margin: 0 0 1.25rem;
+}
+
+.uploader-dropzone {
+  position: relative;
+  border: 1px dashed var(--rule);
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.uploader-dropzone:hover,
+.uploader-dropzone[data-drag="true"] {
+  border-color: var(--ink);
+  background: #fcfaf6;
+}
+
+.uploader-dropzone[data-state="uploading"] {
+  cursor: wait;
+  border-style: solid;
+  border-color: var(--ink);
+}
+
+.uploader-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.uploader-hint {
+  margin: 0;
+}
+
+.uploader-hint-primary {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.uploader-hint-secondary {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+.uploader-success {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  padding: 1.25rem;
+  border-radius: 4px;
+  border-left: 3px solid var(--ok);
+}
+
+.uploader-preview {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 2px;
+  background: var(--bg);
+}
+
+.uploader-meta {
+  font-size: 0.8125rem;
+}
+
+.uploader-meta-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.65rem;
+  margin: 0 0 0.25rem;
+}
+
+.uploader-meta-value {
+  margin: 0 0 0.875rem;
+}
+
+.uploader-meta-mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.uploader-variants {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.uploader-variant {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  padding: 0.4rem 0.6rem;
+  border-radius: 2px;
+  margin-bottom: 0.4rem;
+}
+
+.uploader-variant-url {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  flex: 1 1 auto;
+  word-break: break-all;
+}
+
+.uploader-variant-copy {
+  font: inherit;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--ink);
+  flex: 0 0 auto;
+}
+
+.uploader-variant-copy:hover {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+
+.uploader-button {
+  font: inherit;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--ink);
+  color: white;
+  border: 1px solid var(--ink);
+  padding: 0.5rem 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.uploader-button:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.uploader-error {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--err);
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.uploader-error p {
+  margin: 0 0 0.75rem;
+  color: var(--err);
+}
+
+@media (max-width: 480px) {
+  .uploader-success {
+    grid-template-columns: 1fr;
+  }
+}

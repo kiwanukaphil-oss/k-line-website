@@ -22,5 +22,9 @@ migrations_dir = "migrations"
 # binding = "IMAGES"
 # bucket_name = "klinemen-images"
 
+# Public values (NOT secrets). The Cloudflare Images API token is a Pages
+# secret set via `wrangler pages secret put CF_IMAGES_TOKEN`.
 [vars]
 ENVIRONMENT = "production"
+CF_ACCOUNT_ID = "5afd1facc45c9ddd86114155b09fc2e2"
+CF_IMAGES_HASH = "agJvU5vNEnlGrxnVV8QcvA"
