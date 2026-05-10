@@ -1,87 +1,33 @@
-import { useEffect, useState } from "preact/hooks";
-import { ImageUploader } from "./components/ImageUploader";
+import { LocationProvider, Router, Route } from "preact-iso";
+import { AppShell } from "./components/AppShell";
+import { Dashboard } from "./pages/Dashboard";
+import { Catalog } from "./pages/Catalog";
+import { Test } from "./pages/Test";
 
-type HealthStatus = "checking" | "ok" | "error";
-
-type HealthPayload = {
-  ok: boolean;
-  service?: string;
-  phase?: string;
-  user?: string;
-};
-
-type CatalogCount = number | "checking" | "error";
+// Top-level router. preact-iso handles client-side navigation so anchor
+// clicks within the SPA don't full-reload. NotFound catches any unknown
+// path and bounces back to the dashboard message-style.
 
 export function App() {
-  const [status, setStatus] = useState<HealthStatus>("checking");
-  const [payload, setPayload] = useState<HealthPayload | null>(null);
-  const [catalogCount, setCatalogCount] = useState<CatalogCount>("checking");
-
-  useEffect(() => {
-    fetch("/healthz")
-      .then(async (r) => {
-        if (!r.ok) {
-          setStatus("error");
-          return;
-        }
-        const data = (await r.json()) as HealthPayload;
-        setPayload(data);
-        setStatus(data.ok ? "ok" : "error");
-      })
-      .catch(() => setStatus("error"));
-
-    fetch("/api/products/count")
-      .then(async (r) => {
-        if (!r.ok) {
-          setCatalogCount("error");
-          return;
-        }
-        const data = (await r.json()) as { count: number };
-        setCatalogCount(data.count);
-      })
-      .catch(() => setCatalogCount("error"));
-  }, []);
-
-  const catalogDisplay =
-    catalogCount === "checking" ? "checking…"
-      : catalogCount === "error" ? "unavailable"
-        : `${catalogCount} published`;
-
   return (
-    <main class="shell">
-      <header class="brand">
-        <h1>K-LINE MEN</h1>
-        <p class="tagline">Admin dashboard</p>
-      </header>
+    <LocationProvider>
+      <AppShell>
+        <Router>
+          <Route path="/" component={Dashboard} />
+          <Route path="/catalog" component={Catalog} />
+          <Route path="/test" component={Test} />
+          <Route default component={NotFound} />
+        </Router>
+      </AppShell>
+    </LocationProvider>
+  );
+}
 
-      <section class="status" data-status={status}>
-        <p class="status-row">
-          <span class="status-label">API</span>
-          <span class="status-value">{status === "checking" ? "checking…" : status}</span>
-        </p>
-        {payload?.user && (
-          <p class="status-row">
-            <span class="status-label">Signed in</span>
-            <span class="status-value">{payload.user}</span>
-          </p>
-        )}
-        {payload?.phase && (
-          <p class="status-row">
-            <span class="status-label">Phase</span>
-            <span class="status-value">{payload.phase}</span>
-          </p>
-        )}
-        <p class="status-row">
-          <span class="status-label">Catalog</span>
-          <span class="status-value">{catalogDisplay}</span>
-        </p>
-      </section>
-
-      <p class="placeholder">
-        Phase 1c: image pipeline live. Editor surfaces land in Phase 1d.
-      </p>
-
-      <ImageUploader />
-    </main>
+function NotFound() {
+  return (
+    <div class="page page-not-found">
+      <h1 class="page-title">Not found</h1>
+      <p>That page doesn't exist. <a href="/">Back to dashboard</a>.</p>
+    </div>
   );
 }
