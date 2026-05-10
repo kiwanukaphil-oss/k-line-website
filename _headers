@@ -17,11 +17,23 @@
 /assets/images/*
   Cache-Control: public, max-age=2592000
 
-# CSS / JS — moderate cache; updates trickle out within a day
+# CSS / JS — moderate cache; updates trickle out within a day. The
+# Content-Type charset is explicit so browsers don't fall back to
+# Windows-1252 on em-dashes and curly quotes.
 /assets/css/*
   Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: text/css; charset=utf-8
 /assets/js/*
   Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
+# products.js is regenerated on every public-site deploy from D1, so we
+# want the new version to land for visitors within minutes, not the next
+# day. no-cache forces revalidation; the response is small (~80 KB) and
+# 304 responses on unchanged builds keep this cheap.
+/assets/js/products.js
+  Cache-Control: public, no-cache, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
 
 # Brand assets — favicons + footer logo + manifest
 /favicon-16.png
