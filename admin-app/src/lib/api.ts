@@ -145,3 +145,15 @@ export async function restoreProductRevision(productId: string, revisionId: numb
   );
   return data.product;
 }
+
+// Publish (Phase 1e) — fires the public-site deploy hook ----------------
+
+export interface PublishResult {
+  ok: boolean;
+  deploymentId: string | null;
+  shortId: string | null;
+}
+
+export async function triggerPublish(): Promise<PublishResult> {
+  return request<PublishResult>("/api/publish", { method: "POST" });
+}

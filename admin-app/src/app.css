@@ -699,6 +699,17 @@ body {
   margin-bottom: 1rem;
 }
 
+.editor-success {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ok);
+  background: var(--surface);
+  padding: 0.75rem 1rem;
+  border-radius: 2px;
+  color: var(--ok);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
 .editor-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -832,6 +843,17 @@ body {
 }
 .editor-button-primary:hover:not(:disabled) { background: transparent; color: var(--ink); }
 .editor-button-primary:disabled { background: var(--rule); border-color: var(--rule); color: var(--surface); }
+
+.editor-button-publish {
+  color: var(--ok);
+  border-color: rgba(47, 111, 62, 0.4);
+  background: rgba(47, 111, 62, 0.06);
+}
+.editor-button-publish:hover:not(:disabled) {
+  background: var(--ok);
+  color: white;
+  border-color: var(--ok);
+}
 
 .editor-button-danger {
   color: var(--err);

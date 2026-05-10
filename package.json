@@ -11,7 +11,8 @@
     "fetch:fonts": "node scripts/fetch-fonts.mjs",
     "prerender:products": "node scripts/prerender-products.mjs",
     "build:sitemap": "node scripts/build-sitemap.mjs",
-    "build:all": "npm run optimize:images && npm run generate:favicons && npm run generate:og && npm run prerender:products && npm run build:sitemap"
+    "build:from-d1": "node scripts/build-from-d1.mjs",
+    "build:all": "npm run build:from-d1 && npm run optimize:images && npm run generate:favicons && npm run generate:og && npm run prerender:products && npm run build:sitemap"
   },
   "devDependencies": {
     "sharp": "^0.34.0"

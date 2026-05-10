@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import type { Category, Product } from "../../functions/_lib/types";
-import { ApiError, archiveProduct, createProduct, getProduct, listCategories, updateProduct } from "../lib/api";
+import { ApiError, archiveProduct, createProduct, getProduct, listCategories, triggerPublish, updateProduct } from "../lib/api";
 import type { ProductCreateInput, ProductWriteInput } from "../lib/api";
 import { ImageManager, type ManagedImage } from "../components/ImageManager";
 import { ProductPreview } from "../components/ProductPreview";
@@ -128,6 +128,8 @@ export function ProductEditor() {
   // Bumped after every save (manual or auto) so the RevisionHistory panel
   // refetches and shows the new entry without us having to drill a callback.
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
+  const [publishing, setPublishing] = useState(false);
+  const [publishMessage, setPublishMessage] = useState<string | null>(null);
 
   // Categories load once on mount, regardless of edit/create.
   useEffect(() => {
@@ -267,6 +269,42 @@ export function ProductEditor() {
     }
   };
 
+  // Publish flow (Phase 1e) — sets status to 'published', flushes any
+  // pending edits, then fires the deploy hook so klinemen.ug rebuilds.
+  // Combined into a single click because the alternative (manually toggle
+  // status, save, then trigger build separately) is busywork.
+  const onPublish = async () => {
+    if (isNew) return;
+    if (!window.confirm(
+      "Publish this product to klinemen.ug?\n\nIt will be live on the public storefront within ~90 seconds."
+    )) return;
+
+    setPublishing(true);
+    setError(null);
+    setPublishMessage(null);
+    try {
+      // Save with status='published'. Use a single call so saved+published
+      // is atomic from the server's view.
+      const updated = await updateProduct(id!, { ...formToPatch(form), status: "published" });
+      const next = productToFormState(updated);
+      setForm(next);
+      setPristine(next);
+      setSavedAt(Date.now());
+      setHistoryRefreshKey((k) => k + 1);
+
+      const result = await triggerPublish();
+      setPublishMessage(
+        result.shortId
+          ? `Build ${result.shortId} started — live in ~90 seconds.`
+          : "Build started — live in ~90 seconds."
+      );
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const onArchive = async () => {
     if (!id) return;
     if (!window.confirm("Archive this product? It'll be hidden from the storefront. Phase 1d-iv adds proper undo.")) return;
@@ -299,6 +337,7 @@ export function ProductEditor() {
       </header>
 
       {error && <div class="editor-error">{error}</div>}
+      {publishMessage && <div class="editor-success">{publishMessage}</div>}
 
       <div class="editor-grid">
         <form class="editor-form" onSubmit={(e) => { e.preventDefault(); void onSave(); }}>
@@ -466,11 +505,22 @@ export function ProductEditor() {
           </div>
 
           <footer class="editor-actions">
-            <button type="submit" class="editor-button editor-button-primary" disabled={!isDirty || saving}>
+            <button type="submit" class="editor-button editor-button-primary" disabled={!isDirty || saving || publishing}>
               {saving ? "Saving…" : isNew ? "Create product" : "Save changes"}
             </button>
             {!isNew && (
-              <button type="button" class="editor-button editor-button-danger" onClick={() => void onArchive()} disabled={saving}>
+              <button
+                type="button"
+                class="editor-button editor-button-publish"
+                onClick={() => void onPublish()}
+                disabled={saving || publishing}
+                title="Save as published and rebuild the public storefront"
+              >
+                {publishing ? "Publishing…" : "Publish to live site"}
+              </button>
+            )}
+            {!isNew && (
+              <button type="button" class="editor-button editor-button-danger" onClick={() => void onArchive()} disabled={saving || publishing}>
                 Archive
               </button>
             )}
