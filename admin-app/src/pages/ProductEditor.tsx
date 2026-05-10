@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import type { Category, Product } from "../../functions/_lib/types";
 import { ApiError, archiveProduct, createProduct, getProduct, listCategories, updateProduct } from "../lib/api";
 import type { ProductCreateInput, ProductWriteInput } from "../lib/api";
 import { ImageManager, type ManagedImage } from "../components/ImageManager";
 import { ProductPreview } from "../components/ProductPreview";
+import { RevisionHistory } from "../components/RevisionHistory";
 import { TagInput } from "../components/TagInput";
 
 // Product editor — handles both edit (route /catalog/:id) and create
@@ -123,6 +124,10 @@ export function ProductEditor() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  // Bumped after every save (manual or auto) so the RevisionHistory panel
+  // refetches and shows the new entry without us having to drill a callback.
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
 
   // Categories load once on mount, regardless of edit/create.
   useEffect(() => {
@@ -144,6 +149,77 @@ export function ProductEditor() {
   }, [id, isNew]);
 
   const isDirty = useMemo(() => JSON.stringify(form) !== JSON.stringify(pristine), [form, pristine]);
+
+  // Autosave (1d-iv) — only kicks in when editing an existing product
+  // (new products require a manual "Create" first to mint the id). Debounce
+  // is 1500ms after the last edit so typing doesn't fire a save per
+  // keystroke. The inFlightRef guard prevents concurrent saves; if the user
+  // edits during a save, the next idle window picks up the new state.
+  const autosaveTimerRef = useRef<number | null>(null);
+  const inFlightRef = useRef(false);
+
+  useEffect(() => {
+    if (isNew) return;
+    if (!isDirty) return;
+    if (inFlightRef.current) return;
+
+    if (autosaveTimerRef.current !== null) {
+      window.clearTimeout(autosaveTimerRef.current);
+    }
+    autosaveTimerRef.current = window.setTimeout(() => {
+      void runAutosave();
+    }, 1500);
+
+    return () => {
+      if (autosaveTimerRef.current !== null) {
+        window.clearTimeout(autosaveTimerRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runAutosave reads `form` from closure
+  }, [form, isDirty, isNew]);
+
+  // The actual autosave call. Skips if validation would obviously fail
+  // (empty name) so we don't spam 400s while the user is mid-edit.
+  const runAutosave = async () => {
+    if (!form.name.trim() || !form.categorySlug || form.price <= 0) return;
+    inFlightRef.current = true;
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await updateProduct(id!, formToPatch(form));
+      const next = productToFormState(updated);
+      setPristine(next);
+      // Don't replace `form` here — the user may have continued editing
+      // during the save. setting pristine to the saved state is enough to
+      // clear the dirty flag for the saved fields.
+      setSavedAt(Date.now());
+      setHistoryRefreshKey((k) => k + 1);
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      inFlightRef.current = false;
+      setSaving(false);
+    }
+  };
+
+  // After a Restore from the history panel, blow away both form and pristine
+  // with the freshly loaded product so the editor reflects the restored state.
+  const refetchAfterRestore = async () => {
+    if (isNew) return;
+    setSaving(true);
+    try {
+      const p = await getProduct(id!);
+      const next = productToFormState(p);
+      setForm(next);
+      setPristine(next);
+      setSavedAt(Date.now());
+      setHistoryRefreshKey((k) => k + 1);
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -182,6 +258,7 @@ export function ProductEditor() {
         setForm(next);
         setPristine(next);
         setSavedAt(Date.now());
+        setHistoryRefreshKey((k) => k + 1);
       }
     } catch (e) {
       setError(errorMessage(e));
@@ -413,6 +490,29 @@ export function ProductEditor() {
           images={form.images}
         />
       </div>
+
+      {!isNew && (
+        <section class="history" data-open={historyOpen ? "true" : "false"}>
+          <button
+            type="button"
+            class="history-toggle"
+            onClick={() => setHistoryOpen((o) => !o)}
+            aria-expanded={historyOpen}
+          >
+            <span>{historyOpen ? "▾" : "▸"} Revision history</span>
+            <span class="history-toggle-hint">Last 50 saves · 30-day retention</span>
+          </button>
+          {historyOpen && (
+            <div class="history-body">
+              <RevisionHistory
+                productId={id!}
+                refreshKey={historyRefreshKey}
+                onRestored={() => void refetchAfterRestore()}
+              />
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

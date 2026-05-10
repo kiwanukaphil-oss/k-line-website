@@ -114,3 +114,34 @@ export async function createProduct(input: ProductCreateInput): Promise<Product>
 export async function archiveProduct(id: string): Promise<void> {
   await request<{ ok: boolean }>(`/api/products/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
+
+// Revision history (Phase 1d-iv) ------------------------------------------
+
+export interface RevisionListEntry {
+  id: number;
+  createdAt: number;
+  createdBy: string;
+  preview: {
+    name?: string;
+    price?: number;
+    status?: string;
+  };
+}
+
+export async function listProductRevisions(productId: string): Promise<RevisionListEntry[]> {
+  const data = await request<{ revisions: RevisionListEntry[] }>(
+    `/api/products/${encodeURIComponent(productId)}/revisions`
+  );
+  return data.revisions;
+}
+
+export async function restoreProductRevision(productId: string, revisionId: number): Promise<Product> {
+  const data = await request<{ ok: boolean; product: Product }>(
+    `/api/products/${encodeURIComponent(productId)}/restore`,
+    {
+      method: "POST",
+      body: JSON.stringify({ revisionId })
+    }
+  );
+  return data.product;
+}
